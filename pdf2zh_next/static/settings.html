@@ -610,6 +610,32 @@
                     <div class="tab-content" id="tab-user-mgmt">
                         <h3>User Management</h3>
 
+                        <!-- Registration Settings -->
+                        <div class="card mb-lg">
+                            <div class="card-header">
+                                <h4 class="card-title" data-i18n="settings.users.registration.title">Registration
+                                    Settings</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="allow-registration">
+                                        <span data-i18n="settings.users.registration.allow">Allow New User
+                                            Registration</span>
+                                    </label>
+                                    <small class="form-help" data-i18n="settings.users.registration.help">When enabled,
+                                        users can register new accounts from the login page</small>
+                                </div>
+
+                                <div id="registration-status" class="alert alert-info mt-md" style="display: none;">
+                                    <span id="registration-status-text"></span>
+                                </div>
+
+                                <button class="btn btn-primary mt-md" id="save-registration-btn">Save Registration
+                                    Settings</button>
+                            </div>
+                        </div>
+
                         <div class="card mb-lg">
                             <div class="card-header">
                                 <h4 class="card-title">Add New User</h4>
@@ -761,6 +787,7 @@
                 // Load users list if admin
                 if (userInfo && userInfo.is_admin) {
                     await loadUsers();
+                    await loadRegistrationSettings();
                 }
             } catch (error) {
                 console.error('Initialization error:', error);
@@ -1023,6 +1050,48 @@
                 showError(error);
             }
         }
+
+        // Load registration settings
+        async function loadRegistrationSettings() {
+            try {
+                const response = await api.checkRegistrationStatus();
+                const checkbox = document.getElementById('allow-registration');
+                const statusDiv = document.getElementById('registration-status');
+                const statusText = document.getElementById('registration-status-text');
+
+                checkbox.checked = response.enabled;
+
+                // Show status
+                statusDiv.style.display = 'block';
+                if (response.enabled) {
+                    statusDiv.className = 'alert alert-success mt-md';
+                    statusText.textContent = i18n.t('settings.users.registration.enabled');
+                } else {
+                    statusDiv.className = 'alert alert-info mt-md';
+                    statusText.textContent = i18n.t('settings.users.registration.disabled');
+                }
+            } catch (error) {
+                console.error('Failed to load registration settings:', error);
+            }
+        }
+
+        // Save registration settings
+        document.getElementById('save-registration-btn').addEventListener('click', async () => {
+            const enabled = document.getElementById('allow-registration').checked;
+
+            try {
+                showLoading('Saving registration settings...');
+                await api.toggleRegistration(enabled);
+                hideLoading();
+                showSuccess('Registration settings saved successfully!');
+
+                // Update status display
+                await loadRegistrationSettings();
+            } catch (error) {
+                hideLoading();
+                showError(error);
+            }
+        });
 
         document.getElementById('add-user-btn').addEventListener('click', async () => {
             const username = document.getElementById('new-user-username').value;

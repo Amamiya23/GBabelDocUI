@@ -27,6 +27,7 @@ from pdf2zh_next.config import ConfigManager
 from pdf2zh_next.config.model import SettingsModel
 from pdf2zh_next.config.translate_engine_model import TRANSLATION_ENGINE_METADATA_MAP
 from pdf2zh_next.high_level import do_translate_async_stream
+from pdf2zh_next.const import __version__
 
 logger = logging.getLogger(__name__)
 
@@ -278,7 +279,7 @@ async def check_auth_status():
     """Check if initial setup is required"""
     return {
         "setup_required": not user_manager.has_users(),
-        "version": "2.0.0"
+        "version": __version__
     }
 
 
@@ -357,6 +358,52 @@ async def delete_user(username: str, admin_user: dict = Depends(get_admin_user))
         user_manager.delete_user(username, admin_user['username'])
         return {"success": True, "message": f"User '{username}' deleted successfully"}
     except (AuthenticationError, ValueError) as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.get("/api/auth/registration-status")
+async def get_registration_status():
+    """Check if user registration is enabled (public endpoint)"""
+    enabled = user_manager.get_registration_enabled()
+    return {"success": True, "enabled": enabled}
+
+
+@app.post("/api/auth/registration-toggle")
+async def toggle_registration(request: dict, admin_user: dict = Depends(get_admin_user)):
+    """Enable or disable user registration (admin only)"""
+    try:
+        enabled = request.get('enabled', False)
+        user_manager.set_registration_enabled(enabled, admin_user['username'])
+        return {"success": True, "enabled": enabled, "message": f"Registration {'enabled' if enabled else 'disabled'}"}
+    except AuthenticationError as e:
+        raise HTTPException(status_code=403, detail=str(e))
+
+
+@app.post("/api/auth/register/public")
+async def register_public(request: RegisterRequest):
+    """Public user registration endpoint (only works if registration is enabled)"""
+    # Check if registration is enabled
+    if not user_manager.get_registration_enabled():
+        raise HTTPException(
+            status_code=403, 
+            detail="User registration is currently disabled. Please contact an administrator."
+        )
+    
+    try:
+        user_manager.create_user(request.username, request.password, is_admin=False)
+        
+        # Automatically log in the new user
+        token = user_manager.authenticate(request.username, request.password)
+        user_data = user_manager.validate_token(token)
+        
+        return {
+            "success": True,
+            "message": f"Account created successfully! Welcome, {request.username}!",
+            "token": token,
+            "username": user_data['username'],
+            "is_admin": user_data['is_admin']
+        }
+    except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 

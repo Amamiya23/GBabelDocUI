@@ -174,3 +174,5 @@ uv.lock
 *.pdf
 *.docx
 CLAUDE.md
+
+data/

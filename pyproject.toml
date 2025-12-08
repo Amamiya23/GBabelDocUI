@@ -1,10 +1,11 @@
 [project]
-name = "pdf2zh-next"
-version = "2.7.1"
+name = "pdf2zh-gbabeldocui"
+version = "1.0"
 description = "Latex PDF Translator"
 authors = [
     { name = "awwaawwa", email = "aw@funstory.ai" },
-    { name = "Byaidu", email = "byaidux@gmail.com" }
+    { name = "Byaidu", email = "byaidux@gmail.com" },
+    { name = "ghung",email = "ghungcc@gmail.com"}
 ]
 maintainers = [
     { name = "awwaawwa", email = "aw@funstory.ai" }
@@ -85,8 +86,8 @@ max-line-length = 88
 
 
 [bumpver]
-current_version = "2.7.1"
-version_pattern = "MAJOR.MINOR.PATCH[.PYTAGNUM]"
+current_version = "1.0"
+version_pattern = "MAJOR.MINOR[.PATCH][.PYTAGNUM]"
 
 [bumpver.file_patterns]
 "pyproject.toml" = [

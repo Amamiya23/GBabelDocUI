@@ -133,6 +133,15 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Extract version from pyproject.toml
+        id: get-version
+        run: |
+          VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          MAJOR=$(echo $VERSION | cut -d. -f1)
+          echo "major=$MAJOR" >> $GITHUB_OUTPUT
+          echo "Extracted version: $VERSION (major: $MAJOR)"
+
       - name: Convert to lowercase
         run: |
           echo "GHCR_REPO_LOWER=$(echo ${{ env.GHCR_REPO }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
@@ -144,10 +153,12 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
+            ${{ env.DOCKERHUB_REPO }}:${{ steps.get-version.outputs.version }}
+            ${{ env.DOCKERHUB_REPO }}:${{ steps.get-version.outputs.major }}
             ${{ env.DOCKERHUB_REPO }}:latest
-            ${{ env.DOCKERHUB_REPO }}:dev
+            ${{ env.GHCR_REPO_LOWER }}:${{ steps.get-version.outputs.version }}
+            ${{ env.GHCR_REPO_LOWER }}:${{ steps.get-version.outputs.major }}
             ${{ env.GHCR_REPO_LOWER }}:latest
-            ${{ env.GHCR_REPO_LOWER }}:dev
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -166,22 +177,39 @@ jobs:
           name: win64-exe-with-assets
           path: ./build
 
+      - name: Extract version from pyproject.toml
+        id: get-version
+        run: |
+          VERSION=$(grep '^version = ' pyproject.toml | sed 's/version = "\(.*\)"/\1/')
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Creating release for version: $VERSION"
+
       - name: Create ZIP
         run: |
           mv ./build ./pdf2zh
-          zip -9qr "pdf2zh-win64.zip" ./pdf2zh/*
-
-      - name: Get current date
-        id: date
-        run: echo "date=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_OUTPUT
+          zip -9qr "pdf2zh-win64-v${{ steps.get-version.outputs.version }}.zip" ./pdf2zh/*
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: build-${{ steps.date.outputs.date }}
-          name: Build ${{ steps.date.outputs.date }}
+          tag_name: v${{ steps.get-version.outputs.version }}
+          name: Release v${{ steps.get-version.outputs.version }}
           draft: false
-          prerelease: true
-          files: pdf2zh-win64.zip
+          prerelease: false
+          files: pdf2zh-win64-v${{ steps.get-version.outputs.version }}.zip
+          body: |
+            ## 🚀 Release v${{ steps.get-version.outputs.version }}
+            
+            ### 📦 Downloads
+            - **Windows EXE**: `pdf2zh-win64-v${{ steps.get-version.outputs.version }}.zip`
+            
+            ### 🐳 Docker Images
+            ```bash
+            docker pull eaiu/gbabeldocwebui:${{ steps.get-version.outputs.version }}
+            docker pull ghcr.io/${{ github.repository }}:${{ steps.get-version.outputs.version }}
+            ```
+            
+            ### 📝 Changes
+            Built from commit: ${{ github.sha }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

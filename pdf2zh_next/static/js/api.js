@@ -164,6 +164,43 @@ class APIClient {
   }
 
   /**
+   * Check if registration is enabled (public)
+   */
+  async checkRegistrationStatus() {
+    return this.request('/api/auth/registration-status');
+  }
+
+  /**
+   * Toggle registration setting (admin only)
+   */
+  async toggleRegistration(enabled) {
+    return this.request('/api/auth/registration-toggle', {
+      method: 'POST',
+      body: JSON.stringify({ enabled }),
+    });
+  }
+
+  /**
+   * Public user registration
+   */
+  async registerPublic(username, password) {
+    const response = await this.request('/api/auth/register/public', {
+      method: 'POST',
+      body: JSON.stringify({ username, password }),
+    });
+
+    if (response.success && response.token) {
+      this.setToken(response.token);
+      localStorage.setItem('user_info', JSON.stringify({
+        username: response.username,
+        is_admin: response.is_admin,
+      }));
+    }
+
+    return response;
+  }
+
+  /**
    * Get user settings
    */
   async getSettings() {

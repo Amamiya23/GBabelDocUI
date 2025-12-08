@@ -99,6 +99,29 @@ const translations = {
         'settings.basic.cache.help': 'Force re-translation even if cached results exist',
         'settings.basic.btn.save': 'Save Basic Settings',
 
+        // Registration Page
+        'register.title': 'Create Account',
+        'register.subtitle': 'Register a new account',
+        'register.username': 'Username',
+        'register.password': 'Password',
+        'register.password.confirm': 'Confirm Password',
+        'register.username.min': 'At least 3 characters',
+        'register.password.min': 'At least 6 characters',
+        'register.btn.register': 'Register',
+        'register.link.login': 'Already have an account? Login',
+        'register.link.from_login': "Don't have an account? Register",
+        'register.disabled.title': 'Registration Disabled',
+        'register.disabled.message': 'New user registration is currently disabled. Please contact an administrator.',
+        'register.success': 'Account created successfully! Welcome!',
+        'register.error.mismatch': 'Passwords do not match',
+
+        // User Management - Registration Settings
+        'settings.users.registration.title': 'Registration Settings',
+        'settings.users.registration.allow': 'Allow New User Registration',
+        'settings.users.registration.help': 'When enabled, users can register new accounts from the login page',
+        'settings.users.registration.enabled': 'Registration is currently enabled',
+        'settings.users.registration.disabled': 'Registration is currently disabled',
+
         // Common
         'common.loading': 'Loading...',
         'common.save': 'Save',
@@ -202,6 +225,29 @@ const translations = {
         'settings.basic.cache': '忽略缓存',
         'settings.basic.cache.help': '即使存在缓存结果也强制重新翻译',
         'settings.basic.btn.save': '保存基础设置',
+
+        // Registration Page
+        'register.title': '创建账户',
+        'register.subtitle': '注册新账户',
+        'register.username': '用户名',
+        'register.password': '密码',
+        'register.password.confirm': '确认密码',
+        'register.username.min': '至少3个字符',
+        'register.password.min': '至少6个字符',
+        'register.btn.register': '注册',
+        'register.link.login': '已有账户？登录',
+        'register.link.from_login': '没有账户？注册',
+        'register.disabled.title': '注册已禁用',
+        'register.disabled.message': '新用户注册当前已禁用。请联系管理员。',
+        'register.success': '账户创建成功！欢迎！',
+        'register.error.mismatch': '密码不匹配',
+
+        // User Management - Registration Settings
+        'settings.users.registration.title': '注册设置',
+        'settings.users.registration.allow': '允许新用户注册',
+        'settings.users.registration.help': '启用后，用户可以从登录页面注册新账户',
+        'settings.users.registration.enabled': '注册当前已启用',
+        'settings.users.registration.disabled': '注册当前已禁用',
 
         // Common
         'common.loading': '加载中...',

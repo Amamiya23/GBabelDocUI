@@ -447,6 +447,59 @@ class UserManager:
         """Get the data directory for a specific user"""
         return Path(f"data/users/{username}")
     
+    def get_registration_enabled(self) -> bool:
+        """
+        Check if user registration is enabled
+        
+        Returns:
+            True if registration is enabled, False otherwise (default: False)
+        """
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT value FROM app_config WHERE key = 'allow_registration'")
+        result = cursor.fetchone()
+        conn.close()
+        
+        if result:
+            return result[0].lower() == 'true'
+        return False  # Default to disabled for security
+    
+    def set_registration_enabled(self, enabled: bool, admin_username: str) -> bool:
+        """
+        Enable or disable user registration (admin only)
+        
+        Args:
+            enabled: Whether to enable registration
+            admin_username: Username of the admin making the change
+            
+        Returns:
+            True if setting was updated successfully
+            
+        Raises:
+            AuthenticationError: If admin_username is not an admin
+        """
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        
+        # Check if requester is admin
+        cursor.execute("SELECT is_admin FROM users WHERE username = ?", (admin_username,))
+        result = cursor.fetchone()
+        if not result or not result[0]:
+            conn.close()
+            raise AuthenticationError("Only admins can change registration settings")
+        
+        # Update or insert the setting
+        value = 'true' if enabled else 'false'
+        cursor.execute(
+            "INSERT OR REPLACE INTO app_config (key, value) VALUES ('allow_registration', ?)",
+            (value,)
+        )
+        
+        conn.commit()
+        conn.close()
+        return True
+    
     def cleanup_expired_sessions(self):
         """Remove expired sessions from the database"""
         conn = sqlite3.connect(self.db_path)
