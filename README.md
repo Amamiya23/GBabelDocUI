@@ -3,7 +3,7 @@
 基于 [PDFMathTranslate-next](https://github.com/PDFMathTranslate-next/PDFMathTranslate-next) 开发的非破坏式多用户 Web UI。
 
 > 敬告：
-> 仅测试OpenAI、Azure格式，仅测试docker容器部署。
+> 仅测试OpenAI、AzureAI、Bing、Google格式，仅测试docker容器部署。
 
 ## 原项目信息
 
