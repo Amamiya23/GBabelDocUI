@@ -140,7 +140,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+pdf2zh_next/myenv
+pdf2zh_next/data
 # Spyder project settings
 .spyderproject
 .spyproject

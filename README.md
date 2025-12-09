@@ -1,78 +1,85 @@
-# GBabelDocUI
 
-基于 [PDFMathTranslate-next](https://github.com/PDFMathTranslate-next/PDFMathTranslate-next) 开发的非破坏式多用户 Web UI。
 
-> 敬告：
-> 仅测试OpenAI、AzureAI、Bing、Google格式，仅测试docker容器部署。
+## 二次修改方便个人使用
 
-## 原项目信息
+基于 [PDFMathTranslate-next](https://github.com/PDFMathTranslate-next/PDFMathTranslate-next) 及[eaiu/GBabelDocUI: 基于 「PDFMathTranslate-next」 开发的非破坏式多用户 Web UI。](https://github.com/eaiu/GBabelDocUI)简单修改。
 
-- **原仓库**: [PDFMathTranslate-next](https://github.com/PDFMathTranslate-next/PDFMathTranslate-next)
-- **许可证**: AGPL-3.0 License
-- **核心引擎**: [BabelDOC](http://yadt.io)
+由管理员设置全局配置，所有用户使用一套配置，降低门槛，部署后其他人无需设置，方便他人使用并且避免泄露自己的api。
+![alt text](image.png)
 
-## 新增功能
 
-### 全新UI
-- **现代化界面**: 简洁的设计风格
-- **非破坏式新增**: 可通过指定环境变量PDF2ZH_WEB_UI=1,启用当前Web UI
-![mainPage](./static/mainPage.png)
+## 教程
 
-### 用户系统
-- **多用户支持**: 支持管理员和普通用户
-- **首次设置向导**: 自动引导创建管理员账户
-- **用户自助注册**: 管理员可控制是否允许新用户注册
-- **JWT 认证**: 安全的 Token 认证机制
-- **会话管理**: 登录状态持久化，支持过期自动清理
+### 代码运行
 
-### 持久化用户配置
-- **用户数据持久化**: 用户数据持久化到volume,刷新网页配置不会消失 
-- **独立配置空间**: 每个用户拥有独立的设置
-- **翻译服务配置**: 支持 OpenAI、Azure AI、Gemini等多种服务，目前仅测试OpenAI、Azure格式
-- **PDF 输出选项**: 单语/双语输出、水印控制、交替页面模式
-- **高级设置**: 速率限制、术语提取、BabelDOC 参数
-- **配置导入/导出**: 一键导出配置为JSON文件，支持跨用户快速分享设置
+克隆后在代码根目录创建虚拟环境
 
-### 文件管理
-- **翻译历史**: 查看所有翻译记录
-- **文件下载**: 支持下载 Mono/Dual 版本
-- **一键删除**: 删除历史记录及关联文件
-
-## Docker 部署
-
-```yaml
-version: '3.8'
-
-services:
-  pdfmathtranslate:
-    image: eaiu/gbabeldocwebui:latest
-    container_name: pdfmathtranslate
-    ports:
-      - "7860:7860"
-    restart: unless-stopped
-    environment:
-      - PDF2ZH_WEB_UI=1  # 启用当前Web UI
-    volumes:
-      - ./data/pdf2zh-config:/root/.config/pdf2zh
-      - ./data/pdf2zh-data:/app/data  # 用户数据持久化
-volumes:
-  pdf2zh-config:
-  pdf2zh-data:
+```zsh
+uv venv --python 3.13 myenv
 ```
 
-## volume目录结构
+下载依赖库
 
-```
-data/
-├── auth.db           # 用户认证数据库
-└── users/
-    └── {username}/
-        ├── settings.json  # 用户配置
-        ├── history.json   # 翻译历史
-        ├── uploads/       # 上传的文件
-        └── outputs/       # 翻译结果
+```zsh
+uv pip install --no-cache -r pyproject.toml
 ```
 
-## License
+==可以根据需求自行修改代码==，完成自身功能需求后，
 
-本项目遵循 [AGPL-3.0 License](LICENSE)，与原项目保持一致。
+```zsh
+uv pip install --no-cache . && uv pip install --no-cache --compile-bytecode -U babeldoc "pymupdf<1.25.3" && babeldoc --version && babeldoc --warmup
+```
+
+然后运行ui，其中PDF2ZH_WEB_UI=1表示运行新ui，否则运行PDFMathTranslate-next默认ui.
+
+```zsh
+cd pdf2zh_next
+PDF2ZH_WEB_UI=1 python3 main.py --gui --server-port 7862
+```
+
+可以配置systemd
+
+```zsh
+sudo nano /etc/systemd/system/pdf2zh_web_ui.service
+```
+
+修改以下为你所在路径的全局变量
+
+```zsh
+[Unit]
+Description=PDF2ZH Web UI Service
+After=network.target
+
+[Service]
+Type=simple
+User=cat
+WorkingDirectory=/home/cat/GBabelDocUI/pdf2zh_next
+Environment="PDF2ZH_WEB_UI=1"
+ExecStart=/home/cat/GBabelDocUI/pdf2zh_next/myenv/bin/python3 main.py --gui
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
+```
+
+启动服务
+
+```zsh
+sudo systemctl daemon-reload
+sudo systemctl start pdf2zh_web_ui.service
+sudo systemctl enable pdf2zh_web_ui.service
+```
+
+
+
+## Docker
+
+
+
+构建镜像
+
+```zsh
+docker build -t amamiya1/gbabeldocwebui:latest .
+```
+
