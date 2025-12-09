@@ -24,7 +24,7 @@ uv venv --python 3.13 myenv
 uv pip install --no-cache -r pyproject.toml
 ```
 
-==可以根据需求自行修改代码==，完成自身功能需求后，
+**可以根据需求自行修改代码**，完成自身功能需求后，
 
 ```zsh
 uv pip install --no-cache . && uv pip install --no-cache --compile-bytecode -U babeldoc "pymupdf<1.25.3" && babeldoc --version && babeldoc --warmup
