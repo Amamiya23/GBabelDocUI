@@ -83,3 +83,31 @@ sudo systemctl enable pdf2zh_web_ui.service
 docker build -t amamiya1/gbabeldocwebui:latest .
 ```
 
+配置`docker-compose.yml`
+
+```yml
+version: '3.8'
+
+services:
+  pdfmathtranslate:
+    image: amamiya1/gbabeldocwebui:latest
+    container_name: pdf2translate
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    environment:
+      - PDF2ZH_WEB_UI=1  # 启用当前Web UI
+    volumes:
+      - ./data/pdf2zh-config:/root/.config/pdf2zh
+      - ./data/pdf2zh-data:/app/data  # 用户数据持久化
+volumes:
+  pdf2zh-config:
+  pdf2zh-data:
+```
+
+执行
+
+```zsh
+docker-compose up -d
+```
+
