@@ -1,4 +1,4 @@
-FROM h9ie6ws364v1xs.xuanyuan.run/astral/uv:python3.13-bookworm-slim
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 
 WORKDIR /app
 
@@ -6,8 +6,10 @@ EXPOSE 7860
 
 ENV PYTHONUNBUFFERED=1
 
-ENV UV_INDEX_URL=https://mirrors.aliyun.com/pypi/simple
-ENV UV_DEFAULT_INDEX=https://mirrors.aliyun.com/pypi/simple
+ENV UV_INDEX_URL=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+ENV UV_HTTP_TIMEOUT=30
+ENV UV_HTTP_MAX_RETRIES=5
 
 RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || sed -i 's/deb.debian.org/mirrors.aliyun.com/g' /etc/apt/sources.list \
     && sed -i 's|security.debian.org/debian-security|mirrors.aliyun.com/debian-security|g' /etc/apt/sources.list.d/debian.sources 2>/dev/null || sed -i 's|security.debian.org/debian-security|mirrors.aliyun.com/debian-security|g' /etc/apt/sources.list
@@ -27,7 +29,23 @@ RUN apt-get update && \
 COPY pyproject.toml .
 
 
-RUN uv pip install --system --no-cache -r pyproject.toml && babeldoc --version && babeldoc --warmup
+RUN set -e; \
+        max=5; \
+        n=1; \
+        while [ "$n" -le "$max" ]; do \
+            echo "[pyproject install] Attempt $n/$max"; \
+            if uv pip install --system -r pyproject.toml; then \
+                break; \
+            fi; \
+            if [ "$n" -eq "$max" ]; then \
+                echo "[pyproject install] Failed after $max attempts"; \
+                exit 1; \
+            fi; \
+            n=$((n+1)); \
+            echo "[pyproject install] Retry in 10s..."; \
+            sleep 10; \
+        done; \
+        babeldoc --version && babeldoc --warmup
 
 COPY . .
 
