@@ -32,59 +32,58 @@
             <div class="container">
                 <div class="card">
                     <div class="card-header">
-                        <h1 class="card-title">Settings</h1>
-                        <p class="card-subtitle">Configure your translation preferences and account</p>
+<h1 class="card-title" data-i18n="settings.title">Settings</h1>
+<p class="card-subtitle" data-i18n="settings.subtitle">Configure your translation preferences and account</p>
                     </div>
 
                     <!-- Tabs Navigation -->
                     <div class="tabs-nav">
-                        <button class="tab-button active" data-tab="account">Account</button>
-                        <button class="tab-button" data-tab="basic">Basic Settings</button>
-                        <button class="tab-button" data-tab="pdf-output">PDF Output</button>
-                        <button class="tab-button" data-tab="advanced">Advanced</button>
-                        <button class="tab-button" data-tab="rate-limit">Rate Limiting</button>
-                        <button class="tab-button" data-tab="babeldoc">BabelDOC</button>
-                        <button class="tab-button" data-tab="user-mgmt" id="user-mgmt-tab" style="display: none;">User
-                            Management</button>
+<button class="tab-button active" data-tab="account" data-i18n="settings.tab.account">Account</button>
+<button class="tab-button" data-tab="basic" data-i18n="settings.tab.basic">Basic Settings</button>
+<button class="tab-button" data-tab="pdf-output" data-i18n="settings.tab.pdf">PDF Output</button>
+<button class="tab-button" data-tab="advanced" data-i18n="settings.tab.advanced">Advanced</button>
+<button class="tab-button" data-tab="rate-limit" data-i18n="settings.tab.rate">Rate Limiting</button>
+<button class="tab-button" data-tab="babeldoc" data-i18n="settings.tab.babeldoc">BabelDOC</button>
+<button class="tab-button" data-tab="user-mgmt" id="user-mgmt-tab" style="display: none;" data-i18n="settings.tab.users">User Management</button>
                     </div>
 
                     <!-- Tab: Account Settings -->
                     <div class="tab-content active" id="tab-account">
-                        <h3>Account Settings</h3>
+                        <h3 data-i18n="settings.account.title">Account Settings</h3>
 
                         <div class="form-group">
-                            <label class="form-label">Username</label>
+                            <label class="form-label" data-i18n="settings.account.username">Username</label>
                             <input type="text" class="form-input" id="current-username" readonly>
                         </div>
 
-                        <h4 class="mt-lg">Change Password</h4>
+                        <h4 class="mt-lg" data-i18n="settings.account.password.title">Change Password</h4>
                         <div class="form-group">
-                            <label class="form-label">Current Password</label>
+                            <label class="form-label" data-i18n="settings.account.password.current">Current Password</label>
                             <input type="password" class="form-input" id="current-password"
-                                placeholder="Enter current password">
+                                placeholder="" data-i18n="settings.account.password.placeholder.current">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">New Password</label>
+                            <label class="form-label" data-i18n="settings.account.password.new">New Password</label>
                             <input type="password" class="form-input" id="new-password"
-                                placeholder="Enter new password (min 6 characters)">
+                                placeholder="" data-i18n="settings.account.password.placeholder.new">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Confirm New Password</label>
+                            <label class="form-label" data-i18n="settings.account.password.confirm">Confirm New Password</label>
                             <input type="password" class="form-input" id="confirm-password"
-                                placeholder="Confirm new password">
+                                placeholder="" data-i18n="settings.account.password.placeholder.confirm">
                         </div>
 
-                        <button class="btn btn-primary" id="change-password-btn">Change Password</button>
+                        <button class="btn btn-primary" id="change-password-btn" data-i18n="settings.account.password.btn">Change Password</button>
                     </div>
 
                     <!-- Tab: Basic Settings -->
                     <div class="tab-content" id="tab-basic">
-                        <h3>Translation Service</h3>
+                        <h3 data-i18n="settings.basic.service">Translation Service</h3>
 
                         <div class="form-group">
-                            <label class="form-label">Service</label>
+                            <label class="form-label" data-i18n="settings.basic.service.label">Service</label>
                             <select class="form-select" id="service">
                                 <option value="AzureOpenAI">Azure OpenAI</option>
                                 <option value="OpenAI">OpenAI</option>
@@ -105,21 +104,21 @@
                             <h4 class="mt-md">OpenAI Configuration</h4>
 
                             <div class="form-group">
-                                <label class="form-label">Model</label>
-                                <input type="text" class="form-input" id="openai-model" placeholder="gpt-4o-mini">
+                                <label class="form-label" data-i18n="settings.basic.model">Model</label>
+                                <input type="text" class="form-input" id="openai-model" placeholder="" data-i18n="settings.basic.model.placeholder">
                                 <small class="form-help">OpenAI model to use (e.g., gpt-4, gpt-4o-mini)</small>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">API Key</label>
-                                <input type="password" class="form-input" id="openai-api-key" placeholder="sk-...">
+                                <label class="form-label" data-i18n="settings.basic.apikey">API Key</label>
+                                <input type="password" class="form-input" id="openai-api-key" placeholder="" data-i18n="settings.basic.apikey.placeholder">
                                 <small class="form-help">Your OpenAI API key (required)</small>
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Base URL (Optional)</label>
+                                <label class="form-label" data-i18n="settings.basic.endpoint">Base URL (Optional)</label>
                                 <input type="text" class="form-input" id="openai-base-url"
-                                    placeholder="https://api.openai.com/v1">
+                                    placeholder="" data-i18n="settings.basic.endpoint.placeholder">
                                 <small class="form-help">Custom endpoint for OpenAI-compatible services</small>
                             </div>
 
@@ -225,13 +224,13 @@
                         </div>
 
 
-                        <h3 class="mt-lg">Language Settings</h3>
+                        <h3 class="mt-lg" data-i18n="settings.basic.lang.title">Language Settings</h3>
 
                         <div class="grid grid-2">
                             <div class="form-group">
-                                <label class="form-label">Source Language</label>
+                                <label class="form-label" data-i18n="settings.basic.lang.from">Source Language</label>
                                 <select class="form-select" id="lang-from">
-                                    <option value="auto">Auto Detect</option>
+                                    <option value="auto" data-i18n="settings.basic.lang.auto">Auto Detect</option>
                                     <option value="en">English</option>
                                     <option value="zh">Chinese</option>
                                     <option value="ja">Japanese</option>
@@ -244,7 +243,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Target Language</label>
+                                <label class="form-label" data-i18n="settings.basic.lang.to">Target Language</label>
                                 <select class="form-select" id="lang-to">
                                     <option value="zh">Simplified Chinese</option>
                                     <option value="en">English</option>
@@ -293,15 +292,15 @@
                             </div>
                         </div>
 
-                        <h3 class="mt-lg">Page Selection</h3>
+                        <h3 class="mt-lg" data-i18n="settings.basic.pages.title">Page Selection</h3>
 
                         <div class="form-group">
-                            <label class="form-label">Page Range</label>
+                            <label class="form-label" data-i18n="settings.basic.pages.range">Page Range</label>
                             <select class="form-select" id="page-range">
-                                <option value="all">All Pages</option>
-                                <option value="first">First Page</option>
-                                <option value="first5">First 5 Pages</option>
-                                <option value="custom">Custom Range</option>
+<option value="all" data-i18n="upload.pages.all">All Pages</option>
+<option value="first" data-i18n="upload.pages.first">First Page</option>
+<option value="first5" data-i18n="upload.pages.first5">First 5 Pages</option>
+<option value="custom" data-i18n="upload.pages.custom">Custom Range</option>
                             </select>
                         </div>
 
@@ -314,52 +313,52 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="ignore-cache">
-                                Ignore Cache
+                                <span data-i18n="settings.basic.cache">Ignore Cache</span>
                             </label>
-                            <small class="form-help">Force re-translation even if cached results exist</small>
+                            <small class="form-help" data-i18n="settings.basic.cache.help">Force re-translation even if cached results exist</small>
                         </div>
 
-                        <button class="btn btn-primary btn-block mt-lg" id="save-basic-btn">Save Basic Settings</button>
+                        <button class="btn btn-primary btn-block mt-lg" id="save-basic-btn" data-i18n="settings.basic.btn.save">Save Basic Settings</button>
                     </div>
 
                     <!-- Tab: PDF Output Options -->
                     <div class="tab-content" id="tab-pdf-output">
-                        <h3>PDF Output Options</h3>
+                        <h3 data-i18n="settings.tab.pdf">PDF Output Options</h3>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="no-mono">
-                                Skip Mono PDF Output
+                                <span data-i18n="settings.tab.pdf.no_mono">Skip Mono PDF Output</span>
                             </label>
-                            <small class="form-help">Don't generate translation-only PDF</small>
+                            <small class="form-help" data-i18n="settings.tab.pdf.no_mono.help">Don't generate translation-only PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="no-dual">
-                                Skip Dual PDF Output
+                                <span data-i18n="settings.tab.pdf.no_dual">Skip Dual PDF Output</span>
                             </label>
-                            <small class="form-help">Don't generate bilingual PDF</small>
+                            <small class="form-help" data-i18n="settings.tab.pdf.no_dual.help">Don't generate bilingual PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="dual-translate-first">
-                                Translation First in Dual PDF
+                                <span data-i18n="settings.tab.pdf.dual_first">Translation First in Dual PDF</span>
                             </label>
-                            <small class="form-help">Show translation before original in dual PDF</small>
+                            <small class="form-help" data-i18n="settings.tab.pdf.dual_first.help">Show translation before original in dual PDF</small>
                         </div>
 
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="use-alternating-pages">
-                                Use Alternating Pages
+                                <span data-i18n="settings.tab.pdf.alternating">Use Alternating Pages</span>
                             </label>
-                            <small class="form-help">Alternate between original and translated pages</small>
+                            <small class="form-help" data-i18n="settings.tab.pdf.alternating.help">Alternate between original and translated pages</small>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Watermark Mode</label>
+                            <label class="form-label" data-i18n="settings.tab.pdf.watermark">Watermark Mode</label>
                             <select class="form-select" id="watermark-mode">
                                 <option value="watermarked">Watermarked</option>
                                 <option value="no_watermark">No Watermark</option>
@@ -370,34 +369,33 @@
                         <div class="form-group">
                             <label>
                                 <input type="checkbox" id="only-translated-pages">
-                                Only Include Translated Pages
+                                <span data-i18n="settings.tab.pdf.only_translated">Only Include Translated Pages</span>
                             </label>
-                            <small class="form-help">Exclude pages that weren't translated</small>
+                            <small class="form-help" data-i18n="settings.tab.pdf.only_translated.help">Exclude pages that weren't translated</small>
                         </div>
 
-                        <button class="btn btn-primary btn-block mt-lg" id="save-pdf-output-btn">Save PDF Output
-                            Settings</button>
+                        <button class="btn btn-primary btn-block mt-lg" id="save-pdf-output-btn" data-i18n="settings.basic.btn.save">Save PDF Output Settings</button>
                     </div>
 
                     <!-- Tab: Advanced Options -->
                     <div class="tab-content" id="tab-advanced">
-                        <h3>Advanced Translation Options</h3>
+                        <h3 data-i18n="settings.tab.advanced">Advanced Translation Options</h3>
 
                         <div class="form-group">
-                            <label class="form-label">Custom System Prompt</label>
+                            <label class="form-label" data-i18n="settings.tab.advanced.prompt">Custom System Prompt</label>
                             <textarea class="form-textarea" id="custom-system-prompt"
-                                placeholder="e.g., You are a professional translator..."></textarea>
-                            <small class="form-help">Custom instructions for the translation model</small>
+                                placeholder="" data-i18n="settings.tab.advanced.prompt.placeholder"></textarea>
+                            <small class="form-help" data-i18n="settings.tab.advanced.prompt.help">Custom instructions for the translation model</small>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Minimum Text Length</label>
+                            <label class="form-label" data-i18n="settings.tab.advanced.min_length">Minimum Text Length</label>
                             <input type="number" class="form-input" id="min-text-length" min="0" value="5">
-                            <small class="form-help">Minimum characters required to translate a text block</small>
+                            <small class="form-help" data-i18n="settings.tab.advanced.min_length.help">Minimum characters required to translate a text block</small>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Primary Font Family</label>
+                            <label class="form-label" data-i18n="settings.tab.advanced.font">Primary Font Family</label>
                             <select class="form-select" id="primary-font">
                                 <option value="auto">Auto</option>
                                 <option value="serif">Serif</option>
@@ -427,7 +425,7 @@
                             <small class="form-help">Remote document layout analysis service</small>
                         </div>
 
-                        <h3 class="mt-lg">Advanced PDF Options</h3>
+                        <h3 class="mt-lg" data-i18n="settings.tab.advanced.pdf">Advanced PDF Options</h3>
 
                         <div class="form-group">
                             <label>
@@ -510,13 +508,12 @@
                                 placeholder="e.g., [∫∬∭∮∯∰∇∆]">
                         </div>
 
-                        <button class="btn btn-primary btn-block mt-lg" id="save-advanced-btn">Save Advanced
-                            Settings</button>
+                        <button class="btn btn-primary btn-block mt-lg" id="save-advanced-btn" data-i18n="settings.basic.btn.save">Save Advanced Settings</button>
                     </div>
 
                     <!-- Tab: Rate Limiting -->
                     <div class="tab-content" id="tab-rate-limit">
-                        <h3>Translation Rate Limiting</h3>
+                        <h3 data-i18n="settings.tab.rate">Translation Rate Limiting</h3>
 
                         <div class="form-group">
                             <label class="form-label">Rate Limit Mode</label>
@@ -549,7 +546,7 @@
                             </div>
                         </div>
 
-                        <h3 class="mt-lg">Term Extraction Rate Limiting</h3>
+                        <h3 class="mt-lg" data-i18n="settings.tab.rate.term">Term Extraction Rate Limiting</h3>
 
                         <div class="form-group">
                             <label class="form-label">Term Service</label>
@@ -592,13 +589,12 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-block mt-lg" id="save-rate-limit-btn">Save Rate Limit
-                            Settings</button>
+                        <button class="btn btn-primary btn-block mt-lg" id="save-rate-limit-btn" data-i18n="settings.basic.btn.save">Save Rate Limit Settings</button>
                     </div>
 
                     <!-- Tab: BabelDOC Options -->
                     <div class="tab-content" id="tab-babeldoc">
-                        <h3>BabelDOC Advanced Options</h3>
+                        <h3 data-i18n="settings.tab.babeldoc">BabelDOC Advanced Options</h3>
 
                         <div class="form-group">
                             <label>
@@ -637,13 +633,12 @@
                             </label>
                         </div>
 
-                        <button class="btn btn-primary btn-block mt-lg" id="save-babeldoc-btn">Save BabelDOC
-                            Settings</button>
+                        <button class="btn btn-primary btn-block mt-lg" id="save-babeldoc-btn" data-i18n="settings.basic.btn.save">Save BabelDOC Settings</button>
                     </div>
 
                     <!-- Tab: User Management (Admin Only) -->
                     <div class="tab-content" id="tab-user-mgmt">
-                        <h3>User Management</h3>
+                        <h3 data-i18n="settings.tab.users">User Management</h3>
 
                         <!-- Registration Settings -->
                         <div class="card mb-lg">
@@ -673,28 +668,28 @@
 
                         <div class="card mb-lg">
                             <div class="card-header">
-                                <h4 class="card-title">Add New User</h4>
+                                <h4 class="card-title" data-i18n="settings.tab.users.add">Add New User</h4>
                             </div>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label class="form-label">Username</label>
+                                    <label class="form-label" data-i18n="settings.account.username">Username</label>
                                     <input type="text" class="form-input" id="new-user-username"
-                                        placeholder="Enter username">
+                                        placeholder="" data-i18n="settings.account.username">
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="form-label">Password</label>
+                                    <label class="form-label" data-i18n="settings.account.password.new">Password</label>
                                     <input type="password" class="form-input" id="new-user-password"
-                                        placeholder="Enter password">
+                                        placeholder="" data-i18n="settings.account.password.new">
                                 </div>
 
-                                <button class="btn btn-primary" id="add-user-btn">Add User</button>
+                                <button class="btn btn-primary" id="add-user-btn" data-i18n="settings.tab.users.add">Add User</button>
                             </div>
                         </div>
 
                         <div class="card">
                             <div class="card-header">
-                                <h4 class="card-title">Existing Users</h4>
+                                <h4 class="card-title" data-i18n="settings.tab.users.list">Existing Users</h4>
                             </div>
                             <div class="card-body">
                                 <div id="users-list"></div>
@@ -705,8 +700,8 @@
                     <!-- Global Actions -->
                     <div class="card-footer mt-lg">
                         <div class="flex flex-between">
-                            <button class="btn btn-secondary" id="reset-btn">Reset to Defaults</button>
-                            <button class="btn btn-success" id="save-all-btn">Save All Settings</button>
+<button class="btn btn-secondary" id="reset-btn" data-i18n="common.reset">Reset to Defaults</button>
+<button class="btn btn-success" id="save-all-btn" data-i18n="common.saveall">Save All Settings</button>
                         </div>
                     </div>
                 </div>
@@ -804,6 +799,12 @@
             try {
                 await requireAuth();
                 const userInfo = await updateUserInfo();
+
+                // 仅管理员可访问设置页面，否则跳转到上传页
+                if (!userInfo || !userInfo.is_admin) {
+                    window.location.href = "/static/upload.html";
+                    return;
+                }
 
                 // Show user management tab for admins (check userInfo exists)
                 if (userInfo && userInfo.is_admin) {

@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  pdfmathtranslate:
+    image: eaiu/gbabeldocwebui:latest
+    container_name: pdfmathtranslate
+    ports:
+      - "7860:7860"
+    restart: unless-stopped
+    environment:
+      - PDF2ZH_WEB_UI=1  # 启用当前Web UI
+    volumes:
+      - ./data/pdf2zh-config:/root/.config/pdf2zh
+      - ./data/pdf2zh-data:/app/data  # 用户数据持久化
+volumes:
+  pdf2zh-config:
+  pdf2zh-data:

@@ -141,6 +141,41 @@ const translations = {
         'common.delete': 'Delete',
         'common.reset': 'Reset to Defaults',
         'common.saveall': 'Save All Settings',
+
+        // Settings Tab PDF
+        'settings.tab.pdf.no_mono': 'Skip Mono PDF Output',
+        'settings.tab.pdf.no_mono.help': "Don't generate translation-only PDF",
+        'settings.tab.pdf.no_dual': 'Skip Dual PDF Output',
+        'settings.tab.pdf.no_dual.help': "Don't generate bilingual PDF",
+        'settings.tab.pdf.dual_first': 'Translation First in Dual PDF',
+        'settings.tab.pdf.dual_first.help': 'Show translation before original in dual PDF',
+        'settings.tab.pdf.alternating': 'Use Alternating Pages',
+        'settings.tab.pdf.alternating.help': 'Alternate between original and translated pages',
+        'settings.tab.pdf.watermark': 'Watermark Mode',
+        'settings.tab.pdf.only_translated': 'Only Include Translated Pages',
+        'settings.tab.pdf.only_translated.help': "Exclude pages that weren't translated",
+
+        // Settings Tab Advanced
+        'settings.tab.advanced': 'Advanced Translation Options',
+        'settings.tab.advanced.prompt': 'Custom System Prompt',
+        'settings.tab.advanced.prompt.placeholder': 'e.g., You are a professional translator...',
+        'settings.tab.advanced.prompt.help': 'Custom instructions for the translation model',
+        'settings.tab.advanced.min_length': 'Minimum Text Length',
+        'settings.tab.advanced.min_length.help': 'Minimum characters required to translate a text block',
+        'settings.tab.advanced.font': 'Primary Font Family',
+        'settings.tab.advanced.pdf': 'Advanced PDF Options',
+
+        // Settings Tab Rate
+        'settings.tab.rate': 'Translation Rate Limiting',
+        'settings.tab.rate.term': 'Term Extraction Rate Limiting',
+
+        // Settings Tab BabelDOC
+        'settings.tab.babeldoc': 'BabelDOC Advanced Options',
+
+        // Settings Tab Users
+        'settings.tab.users': 'User Management',
+        'settings.tab.users.add': 'Add New User',
+        'settings.tab.users.list': 'Existing Users',
     },
 
     zh: {
@@ -280,6 +315,41 @@ const translations = {
         'common.delete': '删除',
         'common.reset': '重置为默认',
         'common.saveall': '保存所有设置',
+
+        // Settings Tab PDF
+        'settings.tab.pdf.no_mono': '跳过单语PDF输出',
+        'settings.tab.pdf.no_mono.help': '不生成仅译文PDF',
+        'settings.tab.pdf.no_dual': '跳过双语PDF输出',
+        'settings.tab.pdf.no_dual.help': '不生成双语PDF',
+        'settings.tab.pdf.dual_first': '双语PDF优先显示译文',
+        'settings.tab.pdf.dual_first.help': '双语PDF中译文在前',
+        'settings.tab.pdf.alternating': '交替页面模式',
+        'settings.tab.pdf.alternating.help': '原文与译文页面交替显示',
+        'settings.tab.pdf.watermark': '水印模式',
+        'settings.tab.pdf.only_translated': '仅包含已翻译页面',
+        'settings.tab.pdf.only_translated.help': '排除未翻译页面',
+
+        // Settings Tab Advanced
+        'settings.tab.advanced': '高级翻译选项',
+        'settings.tab.advanced.prompt': '自定义系统提示词',
+        'settings.tab.advanced.prompt.placeholder': '例如：你是一名专业翻译...',
+        'settings.tab.advanced.prompt.help': '为翻译模型自定义指令',
+        'settings.tab.advanced.min_length': '最小文本长度',
+        'settings.tab.advanced.min_length.help': '翻译文本块所需的最小字符数',
+        'settings.tab.advanced.font': '主字体',
+        'settings.tab.advanced.pdf': '高级PDF选项',
+
+        // Settings Tab Rate
+        'settings.tab.rate': '翻译速率限制',
+        'settings.tab.rate.term': '术语提取速率限制',
+
+        // Settings Tab BabelDOC
+        'settings.tab.babeldoc': 'BabelDOC高级选项',
+
+        // Settings Tab Users
+        'settings.tab.users': '用户管理',
+        'settings.tab.users.add': '添加新用户',
+        'settings.tab.users.list': '现有用户',
     }
 };
 

@@ -31,14 +31,14 @@
 
             <div class="form-group">
               <label class="form-label" for="setupUsername" data-i18n="login.username">Username</label>
-              <input type="text" id="setupUsername" class="form-input" placeholder="Enter username" required
+              <input type="text" id="setupUsername" class="form-input" placeholder="" data-i18n="login.username" required
                 minlength="3">
               <span class="form-help" data-i18n="login.username.min">At least 3 characters</span>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="setupPassword" data-i18n="login.password">Password</label>
-              <input type="password" id="setupPassword" class="form-input" placeholder="Enter password" required
+              <input type="password" id="setupPassword" class="form-input" placeholder="" data-i18n="login.password" required
                 minlength="6">
               <span class="form-help" data-i18n="login.password.min">At least 6 characters</span>
             </div>
@@ -46,7 +46,7 @@
             <div class="form-group">
               <label class="form-label" for="setupPasswordConfirm" data-i18n="login.password.confirm">Confirm
                 Password</label>
-              <input type="password" id="setupPasswordConfirm" class="form-input" placeholder="Confirm password"
+              <input type="password" id="setupPasswordConfirm" class="form-input" placeholder="" data-i18n="login.password.confirm"
                 required>
             </div>
 
@@ -61,12 +61,12 @@
           <form id="loginForm">
             <div class="form-group">
               <label class="form-label" for="username" data-i18n="login.username">Username</label>
-              <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+              <input type="text" id="username" class="form-input" placeholder="" data-i18n="login.username" required>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="password" data-i18n="login.password">Password</label>
-              <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+              <input type="password" id="password" class="form-input" placeholder="" data-i18n="login.password" required>
             </div>
 
             <div id="loginError" class="form-error" style="display: none;"></div>
@@ -82,6 +82,29 @@
             <a href="/register.html" class="text-primary" data-i18n="register.link.from_login">Don't have an account?
               Register</a>
           </p>
+          <form id="registerForm" style="display: none;">
+            <h2 class="text-center" data-i18n="register.title">Create Account</h2>
+            <p class="text-center mb-md" data-i18n="register.subtitle">Register a new account</p>
+            <div class="form-group">
+              <label class="form-label" for="registerUsername" data-i18n="register.username">Username</label>
+              <input type="text" id="registerUsername" class="form-input" placeholder="" data-i18n="register.username" required minlength="3">
+              <span class="form-help" data-i18n="register.username.min">At least 3 characters</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="registerPassword" data-i18n="register.password">Password</label>
+              <input type="password" id="registerPassword" class="form-input" placeholder="" data-i18n="register.password" required minlength="6">
+              <span class="form-help" data-i18n="register.password.min">At least 6 characters</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="registerPasswordConfirm" data-i18n="register.password.confirm">Confirm Password</label>
+              <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="" data-i18n="register.password.confirm" required>
+            </div>
+            <div id="registerError" class="form-error" style="display: none;"></div>
+            <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="register.btn.register">Register</button>
+            <p class="text-center mt-md">
+              <a href="/login.html" class="text-primary" data-i18n="register.link.login">Already have an account? Login</a>
+            </p>
+          </form>
           <p class="text-muted" style="font-size: var(--font-size-sm);">
             <span id="app-version">GBabelDocUI - Secure Multi-User System For CH</span>
           </p>
@@ -114,7 +137,8 @@
           // Show setup form
           document.getElementById('setupForm').style.display = 'block';
           document.getElementById('loginForm').style.display = 'none';
-          document.getElementById('subtitle').textContent = 'First time setup - Create your admin account';
+          document.getElementById('subtitle').setAttribute('data-i18n', 'login.setup.title');
+document.getElementById('subtitle').textContent = i18n.t('login.setup.title');
         } else {
           // Show login form
           document.getElementById('setupForm').style.display = 'none';
@@ -148,20 +172,20 @@
 
       // Validate passwords match
       if (password !== passwordConfirm) {
-        errorDiv.textContent = 'Passwords do not match';
+        errorDiv.textContent = i18n.t('register.error.mismatch');
         errorDiv.style.display = 'block';
         return;
       }
 
       errorDiv.style.display = 'none';
-      showLoading('Creating admin account...');
+      showLoading(i18n.t('login.btn.setup'));
 
       try {
         const response = await api.setup(username, password);
 
         if (response.success) {
           hideLoading();
-          showSuccess('Admin account created successfully!');
+          showSuccess(i18n.t('register.success'));
           setTimeout(() => {
             window.location.href = '/upload.html';
           }, 1000);
@@ -182,14 +206,14 @@
       const errorDiv = document.getElementById('loginError');
 
       errorDiv.style.display = 'none';
-      showLoading('Logging in...');
+      showLoading(i18n.t('login.btn.login'));
 
       try {
         const response = await api.login(username, password);
 
         if (response.success) {
           hideLoading();
-          showSuccess('Login successful!');
+          showSuccess(i18n.t('login.btn.login'));
           setTimeout(() => {
             window.location.href = '/upload.html';
           }, 500);

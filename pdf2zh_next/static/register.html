@@ -33,14 +33,14 @@
                     <form id="registerForm" style="display: none;">
                         <div class="form-group">
                             <label class="form-label" for="username" data-i18n="register.username">Username</label>
-                            <input type="text" id="username" class="form-input" placeholder="Enter username" required
+                            <input type="text" id="username" class="form-input" placeholder="" data-i18n="register.username" required
                                 minlength="3">
                             <span class="form-help" data-i18n="register.username.min">At least 3 characters</span>
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="password" data-i18n="register.password">Password</label>
-                            <input type="password" id="password" class="form-input" placeholder="Enter password"
+                            <input type="password" id="password" class="form-input" placeholder="" data-i18n="register.password"
                                 required minlength="6">
                             <span class="form-help" data-i18n="register.password.min">At least 6 characters</span>
                         </div>
@@ -49,22 +49,21 @@
                             <label class="form-label" for="passwordConfirm"
                                 data-i18n="register.password.confirm">Confirm Password</label>
                             <input type="password" id="passwordConfirm" class="form-input"
-                                placeholder="Confirm password" required>
+                                placeholder="" data-i18n="register.password.confirm" required>
                         </div>
 
                         <div id="registerError" class="form-error" style="display: none;"></div>
 
                         <button type="submit" class="btn btn-primary btn-block btn-lg mt-md"
                             data-i18n="register.btn.register">
-                            Register
+                            <span data-i18n="register.btn.register">Register</span>
                         </button>
                     </form>
                 </div>
 
                 <div class="card-footer text-center">
                     <p class="text-muted" style="font-size: var(--font-size-sm);">
-                        <a href="/login.html" class="text-primary" data-i18n="register.link.login">Already have an
-                            account? Login</a>
+                        <a href="/login.html" class="text-primary" data-i18n="register.link.login">已有账户？登录</a>
                     </p>
                 </div>
             </div>
@@ -120,7 +119,7 @@
             }
 
             errorDiv.style.display = 'none';
-            showLoading('Creating account...');
+            showLoading(i18n.t('register.btn.register'));
 
             try {
                 const response = await api.registerPublic(username, password);

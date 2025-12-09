@@ -137,6 +137,7 @@ ENV/
 env.bak/
 venv.bak/
 pdf2zh-dev/
+pdf2zh_next/myenv
 
 # Spyder project settings
 .spyderproject
@@ -176,3 +177,5 @@ uv.lock
 CLAUDE.md
 
 data/
+
+pdf2zh_next/data

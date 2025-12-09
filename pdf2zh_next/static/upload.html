@@ -18,7 +18,7 @@
                     <div class="logo">PDFMathTranslate</div>
                     <ul class="nav-links">
                         <li><a href="/static/upload.html" class="nav-link active" data-i18n="nav.upload">Upload</a></li>
-                        <li><a href="/static/settings.html" class="nav-link" data-i18n="nav.settings">Settings</a></li>
+                        <li><a href="/static/settings.html" class="nav-link" data-i18n="nav.settings" data-admin-only>Settings</a></li>
                         <li><a href="#" class="nav-link" id="user-info"></a></li>
                         <li><a href="#" class="nav-link" id="logout-btn" data-i18n="nav.logout">Logout</a></li>
                     </ul>
@@ -54,9 +54,9 @@
 
                                 <!-- URL Input -->
                                 <div class="form-group">
-                                    <label class="form-label">PDF URL</label>
-                                    <input type="url" class="form-input" id="url-input"
-                                        placeholder="https://example.com/document.pdf">
+<label class="form-label" data-i18n="upload.url">PDF URL</label>
+<input type="url" class="form-input" id="url-input"
+                                        placeholder="" data-i18n="upload.url.placeholder">
                                 </div>
 
                                 <!-- Page Selection -->
@@ -71,10 +71,10 @@
                                 </div>
 
                                 <div class="form-group" id="custom-pages-group" style="display: none;">
-                                    <label class="form-label">Custom Pages</label>
-                                    <input type="text" class="form-input" id="custom-pages-input"
-                                        placeholder="e.g., 1-5,10,15-20">
-                                    <small class="form-help">Enter page numbers or ranges separated by commas</small>
+<label class="form-label" data-i18n="upload.pages.custom.label">Custom Pages</label>
+<input type="text" class="form-input" id="custom-pages-input"
+                                        placeholder="" data-i18n="upload.pages.custom.placeholder">
+<small class="form-help" data-i18n="upload.pages.custom.help">Enter page numbers or ranges separated by commas</small>
                                 </div>
 
                                 <!-- Translate Button -->
@@ -85,42 +85,7 @@
                             </div>
                         </div>
 
-                        <!-- Progress Card -->
-                        <div class="card mt-lg" id="progress-card" style="display: none;">
-                            <div class="card-header">
-                                <h3 class="card-title" data-i18n="upload.progress.title">Translation Progress</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="progress-bar mb-md">
-                                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-                                </div>
-                                <p id="progress-text" class="text-center text-muted">Initializing...</p>
-                                <p id="progress-detail" class="text-center"
-                                    style="font-size: 0.875rem; color: var(--text-muted);"></p>
-                            </div>
-                        </div>
-
-                        <div class="card mt-lg" id="result-card" style="display: none;">
-                            <div class="card-header">
-                                <h3 class="card-title" data-i18n="upload.result.title">Translation Complete!</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="flex gap-md">
-                                    <button class="btn btn-success flex-1" id="download-mono-btn" style="display: none;"
-                                        data-i18n="upload.result.mono">
-                                        📥 Download Translation Only
-                                    </button>
-                                    <button class="btn btn-success flex-1" id="download-dual-btn" style="display: none;"
-                                        data-i18n="upload.result.dual">
-                                        📥 Download Bilingual
-                                    </button>
-                                </div>
-                                <button class="btn btn-secondary btn-block mt-md" id="new-translation-btn"
-                                    data-i18n="upload.result.new">
-                                    Start New Translation
-                                </button>
-                            </div>
-                        </div>
+                        
                     </div>
 
                     <!-- History Section -->
@@ -131,10 +96,49 @@
                                 <p class="card-subtitle" data-i18n="upload.history.subtitle">Your recent translations
                                 </p>
                             </div>
+<div class="card-body" style="max-height:300px;overflow-y:auto;">
+    <div id="history-list">
+        <p class="text-center text-muted" data-i18n="upload.history.empty">No translations
+            yet</p>
+    </div>
+</div>
+                        </div>
+                        <!-- Unified Translation Result Card -->
+                        <div class="card mt-lg" id="result-card">
+                            <div class="card-header">
+                                <h3 class="card-title" id="result-card-title" data-i18n="upload.result.title">Translation Result</h3>
+                            </div>
                             <div class="card-body">
-                                <div id="history-list">
-                                    <p class="text-center text-muted" data-i18n="upload.history.empty">No translations
-                                        yet</p>
+                                <!-- Progress Section -->
+                                <div class="card-body flex-grow-1"> </div>
+                                <div id="progress-section" style="display: none;">
+                                    <div class="progress-bar mb-md">
+                                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                    <p id="progress-text" class="text-center text-muted">Initializing...</p>
+                                    <p id="progress-detail" class="text-center"
+                                        style="font-size: 0.875rem; color: var(--text-muted);"></p>
+                                </div>
+                                <!-- Result Section -->
+                                <div id="download-section" style="display: none;">
+                                    <div class="flex gap-md">
+                                        <button class="btn btn-success flex-1" id="download-mono-btn" style="display: none;"
+                                            data-i18n="upload.result.mono">
+                                            📥 Download Translation Only
+                                        </button>
+                                        <button class="btn btn-success flex-1" id="download-dual-btn" style="display: none;"
+                                            data-i18n="upload.result.dual">
+                                            📥 Download Bilingual
+                                        </button>
+                                    </div>
+                                    <button class="btn btn-secondary btn-block mt-md" id="new-translation-btn"
+                                        data-i18n="upload.result.new">
+                                        Start New Translation
+                                    </button>
+                                </div>
+                                <!-- Idle Section -->
+                                <div id="idle-section" class="text-center text-muted" style="display: block;">
+                                    <span data-i18n="upload.result.title">No translation in progress</span>
                                 </div>
                             </div>
                         </div>
@@ -148,7 +152,7 @@
     <div class="loading-overlay" id="loading-overlay" style="display: none;">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p class="loading-text">Loading...</p>
+            <p class="loading-text" data-i18n="common.loading">Loading...</p>
         </div>
     </div>
 
@@ -254,9 +258,11 @@
                 const result = await api.startTranslation(fileId, translationSettings);
                 currentTaskId = result.task_id;
 
-                // Show progress card
-                document.getElementById('progress-card').style.display = 'block';
-                document.getElementById('result-card').style.display = 'none';
+                // 切换到进度状态
+                document.getElementById('result-card').style.display = 'block';
+                document.getElementById('progress-section').style.display = 'block';
+                document.getElementById('download-section').style.display = 'none';
+                document.getElementById('idle-section').style.display = 'none';
 
                 // Start polling for progress
                 startProgressPolling();
@@ -305,8 +311,11 @@
         }
 
         function showTranslationResult(status) {
-            document.getElementById('progress-card').style.display = 'none';
+            // 切换到结果状态
             document.getElementById('result-card').style.display = 'block';
+            document.getElementById('progress-section').style.display = 'none';
+            document.getElementById('download-section').style.display = 'block';
+            document.getElementById('idle-section').style.display = 'none';
 
             // Get output files from status
             const outputFiles = status.output_files || {};
@@ -314,15 +323,14 @@
             const dualPath = outputFiles.dual;
 
             // Show download buttons based on available files
+            const monoBtn = document.getElementById('download-mono-btn');
+            const dualBtn = document.getElementById('download-dual-btn');
+            monoBtn.style.display = monoPath ? 'block' : 'none';
+            dualBtn.style.display = dualPath ? 'block' : 'none';
             if (monoPath) {
-                const monoBtn = document.getElementById('download-mono-btn');
-                monoBtn.style.display = 'block';
                 monoBtn.onclick = () => downloadFile('mono');
             }
-
             if (dualPath) {
-                const dualBtn = document.getElementById('download-dual-btn');
-                dualBtn.style.display = 'block';
                 dualBtn.onclick = () => downloadFile('dual');
             }
 
@@ -382,7 +390,10 @@
             fileInput.value = '';
             document.getElementById('url-input').value = '';
             document.getElementById('translate-btn').disabled = true;
-            document.getElementById('result-card').style.display = 'none';
+            // 切换到空闲状态
+            document.getElementById('progress-section').style.display = 'none';
+            document.getElementById('download-section').style.display = 'none';
+            document.getElementById('idle-section').style.display = 'block';
             uploadZone.querySelector('.upload-text').textContent = i18n.t('upload.drag');
             uploadZone.querySelector('.upload-hint').textContent = i18n.t('upload.browse');
         });
@@ -420,7 +431,7 @@
                                 ${item.status === 'completed' && item.mono_path ?
                             `<button class="btn btn-sm" style="background: var(--accent-primary); color: white;" onclick="downloadFile('mono', '${item.task_id}')">${i18n.t('upload.result.mono').replace('📥 ', '')}</button>` : ''}
                                 ${item.status === 'completed' && item.dual_path ?
-                            `<button class="btn btn-sm" style="background: #6c757d; color: white;" onclick="downloadFile('dual', '${item.task_id}')">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
+                            `<button class="btn btn-sm" style="background: #52b596; color: white;" onclick="downloadFile('dual', '${item.task_id}')">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
                                 <button class="btn btn-sm" style="background: var(--accent-error); color: white;" onclick="deleteHistoryItem('${item.task_id}')" title="${i18n.t('common.delete')}">🗑️</button>
                             </div>
                             
@@ -457,6 +468,10 @@
                 await requireAuth();
                 await updateUserInfo();
                 await loadHistory();
+                // 页面初始为“空闲”状态
+                document.getElementById('progress-section').style.display = 'none';
+                document.getElementById('download-section').style.display = 'none';
+                document.getElementById('idle-section').style.display = 'block';
             } catch (error) {
                 console.error('Initialization error:', error);
             }

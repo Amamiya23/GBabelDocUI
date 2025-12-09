@@ -637,6 +637,42 @@ input[type="radio"] {
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
 
 /* ============================================
+   Custom Layout Fixes for Upload Page - FINAL ALIGNMENT
+   ============================================ */
+
+/* 1. 确保左右两栏容器占据 Grid 单元格的全部高度，并作为垂直 Flex 容器 */
+.grid-2 > div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. 针对右侧栏容器（第二个子元素）进行优化 */
+.grid-2 > div:last-child {
+    /* 确保右侧栏的子元素可以被 Flexbox 控制 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 3. 强制右侧的“翻译结果”卡片伸展 */
+/* 结果卡片必须占据右侧容器中，历史卡片用完后的所有剩余空间 */
+.grid-2 > div:last-child #result-card {
+    flex: 1; /* 关键：使其伸展，匹配左侧卡片的高度 */
+    /* 确保内部内容能垂直对齐 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 4. 确保左侧卡片不会过度伸展（如果 Grid 自身没处理好） */
+/* 由于现在是右侧伸展，左侧卡片保持默认高度即可，但我们仍需确保它的内容结构正确 */
+.grid-2 > div:first-child .card {
+    flex: 0 0 auto; /* 防止它拉伸或收缩，保持其自然高度 */
+}
+
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+/* ============================================
    Animations
    ============================================ */
 @keyframes fadeIn {

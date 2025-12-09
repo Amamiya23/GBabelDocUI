@@ -410,28 +410,24 @@ async def register_public(request: RegisterRequest):
 # Settings endpoints
 @app.get("/api/settings")
 async def get_settings(current_user: dict = Depends(get_current_user)):
-    """Get current user's settings"""
-    user_dir = user_manager.get_user_dir(current_user['username'])
-    settings_file = user_dir / "settings.json"
-    
-    if settings_file.exists():
-        settings = json.loads(settings_file.read_text())
+    """获取全局设置，所有用户都读取 data/global_settings.json"""
+    global_settings_file = Path("data/global_settings.json")
+    if global_settings_file.exists():
+        settings = json.loads(global_settings_file.read_text())
     else:
         settings = {}
-    
     return {"success": True, "settings": settings}
 
 
+from fastapi import Body
+
 @app.post("/api/settings")
-async def update_settings(settings: dict, current_user: dict = Depends(get_current_user)):
-    """Update current user's settings"""
-    user_dir = user_manager.get_user_dir(current_user['username'])
-    user_dir.mkdir(parents=True, exist_ok=True)
-    settings_file = user_dir / "settings.json"
-    
-    settings_file.write_text(json.dumps(settings, indent=2))
-    
-    return {"success": True, "message": "Settings updated successfully"}
+async def update_settings(settings: dict = Body(...), admin_user: dict = Depends(get_admin_user)):
+    """仅管理员可写全局设置，写入 data/global_settings.json"""
+    global_settings_file = Path("data/global_settings.json")
+    global_settings_file.parent.mkdir(parents=True, exist_ok=True)
+    global_settings_file.write_text(json.dumps(settings, indent=2, ensure_ascii=False))
+    return {"success": True, "message": "全局设置已更新"}
 
 
 @app.post("/api/settings/password")
@@ -449,14 +445,12 @@ async def change_password(request: ChangePasswordRequest, current_user: dict = D
 
 
 @app.post("/api/settings/reset")
-async def reset_settings(current_user: dict = Depends(get_current_user)):
-    """Reset current user's settings to default"""
-    user_dir = user_manager.get_user_dir(current_user['username'])
-    settings_file = user_dir / "settings.json"
-    
-    settings_file.write_text("{}")
-    
-    return {"success": True, "message": "Settings reset to default"}
+async def reset_settings(admin_user: dict = Depends(get_admin_user)):
+    """仅管理员可重置全局设置，清空 data/global_settings.json"""
+    global_settings_file = Path("data/global_settings.json")
+    global_settings_file.parent.mkdir(parents=True, exist_ok=True)
+    global_settings_file.write_text("{}")
+    return {"success": True, "message": "全局设置已重置"}
 
 
 @app.get("/api/settings/export")
@@ -640,17 +634,17 @@ async def run_translation(task_id: str, file_path: Path, output_dir: Path, trans
     mono_path = None
     dual_path = None
     original_filename = file_path.stem  # Get filename without extension
+    user_dir = user_manager.get_user_dir(username)
     
     try:
         active_tasks[task_id]["status"] = "processing"
         active_tasks[task_id]["message"] = "Loading user settings..."
         active_tasks[task_id]["original_filename"] = original_filename  # Store for download filename
         
-        # Load user settings
-        user_dir = user_manager.get_user_dir(username)
-        settings_file = user_dir / "settings.json"
-        user_settings = json.loads(settings_file.read_text()) if settings_file.exists() else {}
-        
+        # 统一读取全局设置
+        global_settings_file = Path("data/global_settings.json")
+        user_settings = json.loads(global_settings_file.read_text()) if global_settings_file.exists() else {}
+
         # Get pages from translation_settings if provided
         pages = translation_settings.get('pages') if translation_settings else None
         
