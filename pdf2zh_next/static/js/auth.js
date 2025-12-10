@@ -179,6 +179,8 @@ function formatFileSize(bytes) {
  */
 function formatDate(dateString) {
     const date = new Date(dateString);
+    // Correct for WSL time difference (add 8 hours for Asia/Shanghai timezone)
+    date.setHours(date.getHours() + 8);
     return date.toLocaleString();
 }
 

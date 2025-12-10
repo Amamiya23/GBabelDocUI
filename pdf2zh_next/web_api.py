@@ -779,12 +779,15 @@ async def get_translation_history(current_user: dict = Depends(get_current_user)
     """Get current user's translation history"""
     user_dir = user_manager.get_user_dir(current_user['username'])
     history_file = user_dir / "history.json"
-    
+
     if history_file.exists():
         history = json.loads(history_file.read_text())
     else:
         history = []
-    
+
+    # Sort history from newest to oldest
+    history.sort(key=lambda x: x.get('created_at', ''), reverse=True)
+
     return {"success": True, "history": history}
 
 
@@ -843,43 +846,49 @@ async def download_translation(
     file_type: str = "mono",
     current_user: dict = Depends(get_current_user)
 ):
-    """Download a translated file"""
-    if task_id not in active_tasks:
-        raise HTTPException(status_code=404, detail="Task not found")
-    
-    task = active_tasks[task_id]
-    
-    # Verify task belongs to current user
-    if task["username"] != current_user['username']:
-        raise HTTPException(status_code=403, detail="Access denied")
-    
-    if task["status"] != "completed":
-        raise HTTPException(status_code=400, detail="Translation not completed")
-    
-    # Get file path
-    output_files = task.get("output_files", {})
-    file_path = output_files.get(file_type)
-    
-    if not file_path or not Path(file_path).exists():
-        raise HTTPException(status_code=404, detail="File not found")
-    
-    # Generate clean filename: originalname_mono/dual.pdf
-    original_filename = task.get("original_filename", "translated")
-    # Remove .pdf extension if present
+    """Download a translated file (支持服务重启后历史恢复)"""
+    import re
+    from pathlib import Path
+
+    task = None
+
+    # 优先查 active_tasks
+    if task_id in active_tasks:
+        task = active_tasks[task_id]
+        # 用户校验
+        if task["username"] != current_user['username']:
+            raise HTTPException(status_code=403, detail="Access denied")
+        if task["status"] != "completed":
+            raise HTTPException(status_code=400, detail="Translation not completed")
+        output_files = task.get("output_files", {})
+        file_path = output_files.get(file_type)
+        original_filename = task.get("original_filename", "translated")
+    else:
+        # 查 history.json
+        user_dir = user_manager.get_user_dir(current_user['username'])
+        history_file = user_dir / "history.json"
+        if not history_file.exists():
+            raise HTTPException(status_code=404, detail="Task not found")
+        history = json.loads(history_file.read_text())
+        item = next((x for x in history if x.get("task_id") == task_id and x.get("status") == "completed"), None)
+        if not item:
+            raise HTTPException(status_code=404, detail="Task not found")
+        # 路径直接取 mono_path/dual_path
+        file_path = item.get(f"{file_type}_path")
+        original_filename = item.get("original_filename", "translated")
+        if not file_path or not Path(file_path).exists():
+            raise HTTPException(status_code=404, detail="File not found")
+
+    # 生成下载文件名
     if original_filename.lower().endswith('.pdf'):
         original_filename = original_filename[:-4]
-    # Remove UUID prefix if present (format: uuid_filename)
     if '_' in original_filename:
         parts = original_filename.split('_', 1)
-        # Check if first part looks like UUID (32+ hex chars with dashes)
         if len(parts[0]) >= 32 or (len(parts[0]) == 36 and '-' in parts[0]):
             original_filename = parts[1] if len(parts) > 1 else original_filename
-    # Clean filename for safety
-    import re
-    clean_name = re.sub(r'[^\w\-\u4e00-\u9fff\.]', '_', original_filename)
-    # Generate download filename: originalname_mono/dual.pdf
+    clean_name = re.sub(r'[^\w\--\.]', '_', original_filename)
     download_filename = f"{clean_name}_{file_type}.pdf"
-    
+
     return FileResponse(
         file_path,
         media_type="application/pdf",

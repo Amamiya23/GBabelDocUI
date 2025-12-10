@@ -218,7 +218,7 @@ const translations = {
         'upload.btn.translate': '开始翻译',
         'upload.progress.title': '翻译进度',
         'upload.progress.init': '初始化中...',
-        'upload.result.title': '翻译完成！',
+        'upload.result.title': '翻译结果',
         'upload.result.mono': '📥 下载译文',
         'upload.result.dual': '📥 下载双语版',
         'upload.result.new': '开始新翻译',

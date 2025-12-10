@@ -85,16 +85,30 @@
                         <div class="form-group">
                             <label class="form-label" data-i18n="settings.basic.service.label">Service</label>
                             <select class="form-select" id="service">
-                                <option value="AzureOpenAI">Azure OpenAI</option>
+                                <option value="SiliconFlowFree">SiliconFlow Free</option>
                                 <option value="OpenAI">OpenAI</option>
+                                <option value="AliyunDashScope">Aliyun DashScope</option>
+                                <option value="DeepSeek">DeepSeek</option>
+                                <option value="Zhipu">Zhipu</option>
+                                <option value="SiliconFlow">SiliconFlow</option>
+                                <option value="AzureOpenAI">Azure OpenAI</option>
                                 <option value="GoogleGemini">Google Gemini</option>
+                                <option value="Gemini">Gemini</option>
                                 <option value="DeepL">DeepL</option>
-                                <option value="DeepLX">DeepLX</option>
                                 <option value="Ollama">Ollama</option>
+                                <option value="Xinference">Xinference</option>
+                                <option value="ModelScope">ModelScope</option>
+                                <option value="Tencent">Tencent</option>
+                                <option value="Azure">Azure</option>
+                                <option value="AnythingLLM">AnythingLLM</option>
+                                <option value="Dify">Dify</option>
+                                <option value="Grok">Grok</option>
+                                <option value="Groq">Groq</option>
+                                <option value="QwenMt">QwenMt</option>
+                                <option value="OpenAICompatible">OpenAI Compatible</option>
+                                <option value="ClaudeCode">Claude Code</option>
                                 <option value="Bing">Bing</option>
                                 <option value="Google">Google</option>
-                                <option value="Tencent">Tencent</option>
-                                <option value="SiliconFlowFree">SiliconFlow Free</option>
                             </select>
                         </div>
 
@@ -220,6 +234,169 @@
                                     <input type="checkbox" id="gemini-enable-json-mode">
                                     Enable JSON Mode
                                 </label>
+                            </div>
+                        </div>
+
+                        <!-- Aliyun DashScope Settings -->
+                        <div id="aliyundashscope-settings" class="service-settings" style="display: none;">
+                            <h4 class="mt-md">Aliyun DashScope Configuration</h4>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" class="form-input" id="aliyun-dashscope-model" placeholder="qwen-plus-latest">
+                                <small class="form-help">Aliyun DashScope model to use</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-input" id="aliyun-dashscope-api-key"
+                                    placeholder="Your Aliyun DashScope API key">
+                                <small class="form-help">Your Aliyun DashScope API key (required)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Base URL</label>
+                                <input type="text" class="form-input" id="aliyun-dashscope-base-url"
+                                    placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1">
+                                <small class="form-help">Aliyun DashScope base URL</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Timeout (seconds)</label>
+                                <input type="number" class="form-input" id="aliyun-dashscope-timeout" placeholder="500">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Temperature</label>
+                                <input type="number" class="form-input" id="aliyun-dashscope-temperature" step="0.1" min="0"
+                                    max="2" placeholder="0.0">
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="aliyun-dashscope-send-temperature">
+                                    Send Temperature Parameter
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="aliyun-dashscope-enable-json-mode">
+                                    Enable JSON Mode
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- DeepSeek Settings -->
+                        <div id="deepseek-settings" class="service-settings" style="display: none;">
+                            <h4 class="mt-md">DeepSeek Configuration</h4>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" class="form-input" id="deepseek-model" placeholder="deepseek-chat">
+                                <small class="form-help">DeepSeek model to use</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-input" id="deepseek-api-key"
+                                    placeholder="Your DeepSeek API key">
+                                <small class="form-help">Your DeepSeek API key (required)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="deepseek-enable-json-mode">
+                                    Enable JSON Mode
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Zhipu Settings -->
+                        <div id="zhipu-settings" class="service-settings" style="display: none;">
+                            <h4 class="mt-md">Zhipu Configuration</h4>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" class="form-input" id="zhipu-model" placeholder="glm-4-flash">
+                                <small class="form-help">Zhipu model to use</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-input" id="zhipu-api-key"
+                                    placeholder="Your Zhipu API key">
+                                <small class="form-help">Your Zhipu API key (required)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="zhipu-enable-json-mode">
+                                    Enable JSON Mode
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- SiliconFlow Settings -->
+                        <div id="siliconflow-settings" class="service-settings" style="display: none;">
+                            <h4 class="mt-md">SiliconFlow Configuration</h4>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" class="form-input" id="siliconflow-model" placeholder="Qwen/Qwen2.5-7B-Instruct">
+                                <small class="form-help">SiliconFlow model to use</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">API Key</label>
+                                <input type="password" class="form-input" id="siliconflow-api-key"
+                                    placeholder="Your SiliconFlow API key">
+                                <small class="form-help">Your SiliconFlow API key (required)</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Base URL</label>
+                                <input type="text" class="form-input" id="siliconflow-base-url"
+                                    placeholder="https://api.siliconflow.cn/v1">
+                                <small class="form-help">SiliconFlow base URL</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="siliconflow-enable-thinking">
+                                    Enable Thinking
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="siliconflow-send-enable-thinking">
+                                    Send Enable Thinking Parameter
+                                </label>
+                            </div>
+
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="siliconflow-enable-json-mode">
+                                    Enable JSON Mode
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Claude Code Settings -->
+                        <div id="claudecode-settings" class="service-settings" style="display: none;">
+                            <h4 class="mt-md">Claude Code Configuration</h4>
+
+                            <div class="form-group">
+                                <label class="form-label">CLI Path</label>
+                                <input type="text" class="form-input" id="claude-code-path" placeholder="claude">
+                                <small class="form-help">Path to Claude Code CLI</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Model</label>
+                                <input type="text" class="form-input" id="claude-code-model" placeholder="sonnet">
+                                <small class="form-help">Claude Code model to use</small>
                             </div>
                         </div>
 
@@ -784,7 +961,12 @@
             const serviceMap = {
                 'OpenAI': 'openai-settings',
                 'AzureOpenAI': 'azureopenai-settings',
-                'GoogleGemini': 'googlegemini-settings'
+                'GoogleGemini': 'googlegemini-settings',
+                'AliyunDashScope': 'aliyundashscope-settings',
+                'DeepSeek': 'deepseek-settings',
+                'Zhipu': 'zhipu-settings',
+                'SiliconFlow': 'siliconflow-settings',
+                'ClaudeCode': 'claudecode-settings'
             };
 
             const settingsId = serviceMap[service];
@@ -861,6 +1043,32 @@
                 document.getElementById('gemini-model').value = settings.gemini_model || 'gemini-1.5-flash';
                 document.getElementById('gemini-api-key').value = settings.gemini_api_key || '';
                 document.getElementById('gemini-enable-json-mode').checked = settings.gemini_enable_json_mode || false;
+            } else if (service === 'AliyunDashScope') {
+                document.getElementById('aliyun-dashscope-model').value = settings.aliyun_dashscope_model || 'qwen-plus-latest';
+                document.getElementById('aliyun-dashscope-api-key').value = settings.aliyun_dashscope_api_key || '';
+                document.getElementById('aliyun-dashscope-base-url').value = settings.aliyun_dashscope_base_url || 'https://dashscope.aliyuncs.com/compatible-mode/v1';
+                document.getElementById('aliyun-dashscope-timeout').value = settings.aliyun_dashscope_timeout || '';
+                document.getElementById('aliyun-dashscope-temperature').value = settings.aliyun_dashscope_temperature || '';
+                document.getElementById('aliyun-dashscope-send-temperature').checked = settings.aliyun_dashscope_send_temperature || false;
+                document.getElementById('aliyun-dashscope-enable-json-mode').checked = settings.aliyun_dashscope_enable_json_mode || false;
+            } else if (service === 'DeepSeek') {
+                document.getElementById('deepseek-model').value = settings.deepseek_model || 'deepseek-chat';
+                document.getElementById('deepseek-api-key').value = settings.deepseek_api_key || '';
+                document.getElementById('deepseek-enable-json-mode').checked = settings.deepseek_enable_json_mode || false;
+            } else if (service === 'Zhipu') {
+                document.getElementById('zhipu-model').value = settings.zhipu_model || 'glm-4-flash';
+                document.getElementById('zhipu-api-key').value = settings.zhipu_api_key || '';
+                document.getElementById('zhipu-enable-json-mode').checked = settings.zhipu_enable_json_mode || false;
+            } else if (service === 'SiliconFlow') {
+                document.getElementById('siliconflow-model').value = settings.siliconflow_model || 'Qwen/Qwen2.5-7B-Instruct';
+                document.getElementById('siliconflow-api-key').value = settings.siliconflow_api_key || '';
+                document.getElementById('siliconflow-base-url').value = settings.siliconflow_base_url || 'https://api.siliconflow.cn/v1';
+                document.getElementById('siliconflow-enable-thinking').checked = settings.siliconflow_enable_thinking || false;
+                document.getElementById('siliconflow-send-enable-thinking').checked = settings.siliconflow_send_enable_thinking || false;
+                document.getElementById('siliconflow-enable-json-mode').checked = settings.siliconflow_enable_json_mode || false;
+            } else if (service === 'ClaudeCode') {
+                document.getElementById('claude-code-path').value = settings.claude_code_path || 'claude';
+                document.getElementById('claude-code-model').value = settings.claude_code_model || 'sonnet';
             }
 
             document.getElementById('lang-from').value = settings.lang_from || 'auto';
@@ -962,6 +1170,37 @@
                         gemini_model: document.getElementById('gemini-model').value,
                         gemini_api_key: document.getElementById('gemini-api-key').value,
                         gemini_enable_json_mode: document.getElementById('gemini-enable-json-mode').checked
+                    }),
+                    ...(service === 'AliyunDashScope' && {
+                        aliyun_dashscope_model: document.getElementById('aliyun-dashscope-model').value,
+                        aliyun_dashscope_api_key: document.getElementById('aliyun-dashscope-api-key').value,
+                        aliyun_dashscope_base_url: document.getElementById('aliyun-dashscope-base-url').value,
+                        aliyun_dashscope_timeout: document.getElementById('aliyun-dashscope-timeout').value || null,
+                        aliyun_dashscope_temperature: document.getElementById('aliyun-dashscope-temperature').value || null,
+                        aliyun_dashscope_send_temperature: document.getElementById('aliyun-dashscope-send-temperature').checked,
+                        aliyun_dashscope_enable_json_mode: document.getElementById('aliyun-dashscope-enable-json-mode').checked
+                    }),
+                    ...(service === 'DeepSeek' && {
+                        deepseek_model: document.getElementById('deepseek-model').value,
+                        deepseek_api_key: document.getElementById('deepseek-api-key').value,
+                        deepseek_enable_json_mode: document.getElementById('deepseek-enable-json-mode').checked
+                    }),
+                    ...(service === 'Zhipu' && {
+                        zhipu_model: document.getElementById('zhipu-model').value,
+                        zhipu_api_key: document.getElementById('zhipu-api-key').value,
+                        zhipu_enable_json_mode: document.getElementById('zhipu-enable-json-mode').checked
+                    }),
+                    ...(service === 'SiliconFlow' && {
+                        siliconflow_model: document.getElementById('siliconflow-model').value,
+                        siliconflow_api_key: document.getElementById('siliconflow-api-key').value,
+                        siliconflow_base_url: document.getElementById('siliconflow-base-url').value,
+                        siliconflow_enable_thinking: document.getElementById('siliconflow-enable-thinking').checked,
+                        siliconflow_send_enable_thinking: document.getElementById('siliconflow-send-enable-thinking').checked,
+                        siliconflow_enable_json_mode: document.getElementById('siliconflow-enable-json-mode').checked
+                    }),
+                    ...(service === 'ClaudeCode' && {
+                        claude_code_path: document.getElementById('claude-code-path').value,
+                        claude_code_model: document.getElementById('claude-code-model').value
                     }),
 
                     // PDF output
