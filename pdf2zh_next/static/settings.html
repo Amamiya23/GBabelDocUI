@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - PDFMathTranslate</title>
+    <title>设置 - PDFTranslate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/i18n.js"></script>
 </head>
@@ -15,13 +18,44 @@
         <header class="header">
             <div class="container">
                 <nav class="nav">
-                    <div class="logo">PDFMathTranslate</div>
+                    <div class="logo">PDFTranslate</div>
                     <ul class="nav-links">
-                        <li><a href="/static/upload.html" class="nav-link" data-i18n="nav.upload">Upload</a></li>
-                        <li><a href="/static/settings.html" class="nav-link active"
-                                data-i18n="nav.settings">Settings</a></li>
-                        <li><a href="#" class="nav-link" id="user-info"></a></li>
-                        <li><a href="#" class="nav-link" id="logout-btn" data-i18n="nav.logout">Logout</a></li>
+                        <li><a href="#" class="nav-link nav-link-user" id="user-info"></a></li>
+                        <li>
+                            <a href="/static/upload.html" class="nav-link nav-link-icon-only" title="上传">
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 16V4"></path>
+                                        <path d="M7 9l5-5 5 5"></path>
+                                        <path d="M4 20h16"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.upload">Upload</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/static/settings.html" class="nav-link nav-link-icon-only active" title="设置">
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-.33-1 1.65 1.65 0 0 0-1-.6 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1-.33 1.65 1.65 0 0 0 .6-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c0 .39.14.76.4 1 .26.24.62.36 1 .33H21a2 2 0 0 1 0 4h-.09c-.38-.03-.74.09-1 .33-.26.24-.4.61-.4 1.34z"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.settings">Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link nav-link-icon-only" id="logout-btn" title="退出登录">
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <path d="M16 17l5-5-5-5"></path>
+                                        <path d="M21 12H9"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.logout">Logout</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -1016,7 +1050,6 @@
         async function loadSettings() {
             const response = await api.getSettings();
             const settings = response.settings || {};
-            console.log('Loaded settings:', settings);
 
             // Populate all form fields
             // Basic settings
@@ -1283,18 +1316,18 @@
             }
 
             if (newPassword !== confirmPassword) {
-                showAlert('New passwords do not match', 'error');
+                showAlert('两次输入的新密码不一致', 'error');
                 return;
             }
 
             if (newPassword.length < 6) {
-                showAlert('Password must be at least 6 characters', 'error');
+                showAlert('密码长度至少为 6 个字符', 'error');
                 return;
             }
 
             try {
                 await api.changePassword(currentPassword, newPassword);
-                showSuccess('Password changed successfully!');
+                showSuccess('密码修改成功');
                 document.getElementById('current-password').value = '';
                 document.getElementById('new-password').value = '';
                 document.getElementById('confirm-password').value = '';
@@ -1358,7 +1391,7 @@
                 showLoading('Saving registration settings...');
                 await api.toggleRegistration(enabled);
                 hideLoading();
-                showSuccess('Registration settings saved successfully!');
+                showSuccess('注册设置已保存');
 
                 // Update status display
                 await loadRegistrationSettings();
@@ -1415,13 +1448,13 @@
             const password = document.getElementById('new-user-password').value;
 
             if (!username || !password) {
-                showAlert('Please enter username and password', 'error');
+                showAlert('请输入用户名和密码', 'error');
                 return;
             }
 
             try {
                 await api.register(username, password);
-                showSuccess('User added successfully!');
+                showSuccess('用户添加成功');
                 document.getElementById('new-user-username').value = '';
                 document.getElementById('new-user-password').value = '';
                 await loadUsers();
@@ -1431,13 +1464,21 @@
         });
 
         async function deleteUser(username) {
-            if (!confirm(`Are you sure you want to delete user "${username}"?`)) {
+            const confirmed = await showConfirmDialog({
+                title: '删除用户',
+                message: `确定要删除用户“${username}”吗？`,
+                confirmText: '删除',
+                cancelText: '取消',
+                confirmType: 'danger',
+            });
+
+            if (!confirmed) {
                 return;
             }
 
             try {
                 await api.deleteUser(username);
-                showSuccess('User deleted successfully!');
+                showSuccess('用户删除成功');
                 await loadUsers();
             } catch (error) {
                 showError(error);
@@ -1446,13 +1487,21 @@
 
         // Reset to defaults
         document.getElementById('reset-btn').addEventListener('click', async () => {
-            if (!confirm('Are you sure you want to reset all settings to defaults?')) {
+            const confirmed = await showConfirmDialog({
+                title: '重置设置',
+                message: '确定要将所有设置恢复为默认值吗？',
+                confirmText: '重置',
+                cancelText: '取消',
+                confirmType: 'danger',
+            });
+
+            if (!confirmed) {
                 return;
             }
 
             try {
                 await api.resetSettings();
-                showSuccess('Settings reset to defaults!');
+                showSuccess('设置已恢复默认值');
                 await loadSettings();
             } catch (error) {
                 showError(error);

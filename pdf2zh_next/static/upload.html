@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload - PDFMathTranslate</title>
+    <title>上传 - PDFTranslate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="/static/js/i18n.js"></script>
 </head>
@@ -15,12 +18,44 @@
         <header class="header">
             <div class="container">
                 <nav class="nav">
-                    <div class="logo">PDFMathTranslate</div>
+                    <div class="logo">PDFTranslate</div>
                     <ul class="nav-links">
-                        <li><a href="/static/upload.html" class="nav-link active" data-i18n="nav.upload">Upload</a></li>
-                        <li><a href="/static/settings.html" class="nav-link" data-i18n="nav.settings" data-admin-only>Settings</a></li>
-                        <li><a href="#" class="nav-link" id="user-info"></a></li>
-                        <li><a href="#" class="nav-link" id="logout-btn" data-i18n="nav.logout">Logout</a></li>
+                        <li><a href="#" class="nav-link nav-link-user" id="user-info"></a></li>
+                        <li>
+                            <a href="/static/upload.html" class="nav-link nav-link-icon-only active" title="上传">
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M12 16V4"></path>
+                                        <path d="M7 9l5-5 5 5"></path>
+                                        <path d="M4 20h16"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.upload">Upload</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/static/settings.html" class="nav-link nav-link-icon-only" title="设置" data-admin-only>
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06A1.65 1.65 0 0 0 15 19.4a1.65 1.65 0 0 0-1 .6 1.65 1.65 0 0 0-.33 1V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-.33-1 1.65 1.65 0 0 0-1-.6 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-.6-1 1.65 1.65 0 0 0-1-.33H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1-.33 1.65 1.65 0 0 0 .6-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-.6 1.65 1.65 0 0 0 .33-1V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 .33 1 1.65 1.65 0 0 0 1 .6 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c0 .39.14.76.4 1 .26.24.62.36 1 .33H21a2 2 0 0 1 0 4h-.09c-.38-.03-.74.09-1 .33-.26.24-.4.61-.4 1.34z"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.settings">Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="nav-link nav-link-icon-only" id="logout-btn" title="退出登录">
+                                <span class="nav-link-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                                        <path d="M16 17l5-5-5-5"></path>
+                                        <path d="M21 12H9"></path>
+                                    </svg>
+                                </span>
+                                <span class="sr-only" data-i18n="nav.logout">Logout</span>
+                            </a>
+                        </li>
                     </ul>
                 </nav>
             </div>
@@ -32,11 +67,10 @@
                 <div class="grid grid-2">
                     <!-- Upload Section -->
                     <div>
-                        <div class="card">
+                        <div class="card upload-panel">
                             <div class="card-header">
-                                <h2 class="card-title" data-i18n="upload.title">Upload PDF</h2>
-                                <p class="card-subtitle" data-i18n="upload.subtitle">Upload a file or enter a URL to
-                                    translate</p>
+                                <h2 class="card-title" data-i18n="upload.title">上传 PDF</h2>
+                                <p class="card-subtitle" data-i18n="upload.subtitle">上传文件或输入链接开始翻译</p>
                             </div>
 
                             <div class="card-body">
@@ -90,56 +124,57 @@
 
                     <!-- History Section -->
                     <div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="card-title" data-i18n="upload.history.title">Translation History</h2>
-                                <p class="card-subtitle" data-i18n="upload.history.subtitle">Your recent translations
-                                </p>
-                            </div>
-<div class="card-body" style="max-height:300px;overflow-y:auto;">
-    <div id="history-list">
-        <p class="text-center text-muted" data-i18n="upload.history.empty">No translations
-            yet</p>
-    </div>
-</div>
-                        </div>
-                        <!-- Unified Translation Result Card -->
-                        <div class="card mt-lg" id="result-card">
-                            <div class="card-header">
-                                <h3 class="card-title" id="result-card-title" data-i18n="upload.result.title">Translation Result</h3>
-                            </div>
+                        <div class="card activity-panel">
                             <div class="card-body">
-                                <!-- Progress Section -->
-                                <div class="card-body flex-grow-1"> </div>
-                                <div id="progress-section" style="display: none;">
-                                    <div class="progress-bar mb-md">
-                                        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                                <section class="activity-status-panel" id="result-card">
+                                    <div class="activity-status-header">
+                                        <p class="section-eyebrow" data-i18n="upload.activity.current">当前任务</p>
+                                        <h3 class="card-title" id="result-card-title" data-i18n="upload.result.title">翻译结果</h3>
+                                        <p class="card-subtitle" id="result-card-subtitle" data-i18n="upload.activity.ready">准备就绪</p>
                                     </div>
-                                    <p id="progress-text" class="text-center text-muted">Initializing...</p>
-                                    <p id="progress-detail" class="text-center"
-                                        style="font-size: 0.875rem; color: var(--text-muted);"></p>
-                                </div>
-                                <!-- Result Section -->
-                                <div id="download-section" style="display: none;">
-                                    <div class="flex gap-md">
-                                        <button class="btn btn-success flex-1" id="download-mono-btn" style="display: none;"
-                                            data-i18n="upload.result.mono">
-                                            📥 Download Translation Only
-                                        </button>
-                                        <button class="btn btn-success flex-1" id="download-dual-btn" style="display: none;"
-                                            data-i18n="upload.result.dual">
-                                            📥 Download Bilingual
-                                        </button>
+                                    <div id="progress-section" style="display: none;">
+                                        <div class="progress-bar mb-md">
+                                            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                                        </div>
+                                        <p id="progress-text" class="text-center text-muted" data-i18n="upload.progress.init">初始化中...</p>
+                                        <p id="progress-detail" class="text-center activity-helper-text"></p>
                                     </div>
-                                    <button class="btn btn-secondary btn-block mt-md" id="new-translation-btn"
-                                        data-i18n="upload.result.new">
-                                        Start New Translation
-                                    </button>
-                                </div>
-                                <!-- Idle Section -->
-                                <div id="idle-section" class="text-center text-muted" style="display: block;">
-                                    <span data-i18n="upload.result.title">No translation in progress</span>
-                                </div>
+                                    <div id="error-section" class="alert alert-error" style="display: none;">
+                                        <strong id="error-title" data-i18n="upload.activity.error">翻译需要处理</strong>
+                                        <p id="error-message" style="margin: 0.5rem 0 0; color: inherit;"></p>
+                                        <div class="mt-md flex gap-sm">
+                                            <button class="btn btn-primary btn-sm" id="retry-translation-btn" data-i18n="common.retry">
+                                                重试
+                                            </button>
+                                            <button class="btn btn-secondary btn-sm" id="dismiss-error-btn" data-i18n="common.reset_short">
+                                                重置
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div id="success-section" style="display: none;">
+                                        <div class="activity-complete-note activity-state-box">
+                                            <p class="activity-complete-title" data-i18n="upload.activity.finished">翻译已完成</p>
+                                            <p class="activity-helper-text" data-i18n="upload.activity.finished.help">请在下方最近记录中下载结果。</p>
+                                        </div>
+                                    </div>
+                                    <div id="idle-section" class="text-center text-muted activity-idle activity-state-box" style="display: block;">
+                                        <span data-i18n="upload.activity.ready">准备就绪</span>
+                                    </div>
+                                </section>
+
+                                <div class="section-divider"></div>
+
+                                <section>
+                                    <div class="activity-list-header">
+                                        <div>
+                                            <p class="section-eyebrow" data-i18n="upload.activity.recent">最近记录</p>
+                                            <h3 class="card-title" data-i18n="upload.history.title">翻译历史</h3>
+                                        </div>
+                                    </div>
+                                    <div class="activity-history-list" id="history-list">
+                                        <p class="text-center text-muted" data-i18n="upload.history.empty">暂无翻译记录</p>
+                                    </div>
+                                </section>
                             </div>
                         </div>
                     </div>
@@ -152,7 +187,7 @@
     <div class="loading-overlay" id="loading-overlay" style="display: none;">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p class="loading-text" data-i18n="common.loading">Loading...</p>
+            <p class="loading-text" data-i18n="common.loading">加载中...</p>
         </div>
     </div>
 
@@ -162,6 +197,82 @@
         let currentFile = null;
         let currentTaskId = null;
         let progressInterval = null;
+
+        function setResultState(state, options = {}) {
+            const progressSection = document.getElementById('progress-section');
+            const successSection = document.getElementById('success-section');
+            const idleSection = document.getElementById('idle-section');
+            const errorSection = document.getElementById('error-section');
+            const resultTitle = document.getElementById('result-card-title');
+            const resultSubtitle = document.getElementById('result-card-subtitle');
+
+            progressSection.style.display = state === 'progress' ? 'block' : 'none';
+            successSection.style.display = state === 'result' ? 'block' : 'none';
+            idleSection.style.display = state === 'idle' ? 'block' : 'none';
+            errorSection.style.display = state === 'error' ? 'block' : 'none';
+
+            if (state === 'progress') {
+                resultTitle.textContent = i18n.t('upload.activity.progress');
+                resultSubtitle.textContent = options.subtitle || i18n.t('upload.activity.progress.help');
+            } else if (state === 'result') {
+                resultTitle.textContent = i18n.t('upload.activity.complete');
+                resultSubtitle.textContent = options.subtitle || i18n.t('upload.activity.complete.help');
+            } else if (state === 'error') {
+                resultTitle.textContent = i18n.t('upload.activity.error');
+                resultSubtitle.textContent = i18n.t('upload.activity.error.help');
+                document.getElementById('error-message').textContent = options.message || '未知错误';
+            } else {
+                resultTitle.textContent = i18n.t('upload.result.title');
+                resultSubtitle.textContent = i18n.t('upload.activity.ready');
+            }
+        }
+
+        function stopProgressPolling() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+        }
+
+        function resetTranslationState(options = {}) {
+            stopProgressPolling();
+            currentTaskId = null;
+            document.getElementById('progress-fill').style.width = '0%';
+            document.getElementById('progress-text').textContent = i18n.t('upload.progress.init');
+            document.getElementById('progress-detail').textContent = '';
+
+            if (!options.keepInput) {
+                currentFile = null;
+                fileInput.value = '';
+                document.getElementById('url-input').value = '';
+                document.getElementById('translate-btn').disabled = true;
+                uploadZone.querySelector('.upload-text').textContent = i18n.t('upload.drag');
+                uploadZone.querySelector('.upload-hint').textContent = i18n.t('upload.browse');
+            }
+
+            setResultState('idle');
+        }
+
+        function showTranslationError(message) {
+            document.getElementById('translate-btn').disabled = !currentFile
+                && !document.getElementById('url-input').value.trim();
+            setResultState('error', { message });
+            showAlert(message, 'error');
+        }
+
+        function getDisplayFilename(item) {
+            if (item.original_filename) {
+                return item.original_filename;
+            }
+
+            const filename = item.filename || '';
+            const strippedFilename = filename.replace(
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}[_-]+/i,
+                ''
+            );
+
+            return strippedFilename || filename || 'Untitled';
+        }
 
         // Page range selection
         document.getElementById('page-range-select').addEventListener('change', (e) => {
@@ -192,7 +303,7 @@
             if (files.length > 0 && files[0].type === 'application/pdf') {
                 handleFileSelect(files[0]);
             } else {
-                showAlert('Please drop a PDF file', 'error');
+                showAlert('请拖入 PDF 文件', 'error');
             }
         });
 
@@ -206,7 +317,7 @@
             currentFile = file;
             document.getElementById('translate-btn').disabled = false;
             uploadZone.querySelector('.upload-text').textContent = file.name;
-            uploadZone.querySelector('.upload-hint').textContent = `${formatFileSize(file.size)} - Click to change`;
+            uploadZone.querySelector('.upload-hint').textContent = `${formatFileSize(file.size)}，点击可重新选择`;
         }
 
         // URL input
@@ -227,20 +338,19 @@
 
             try {
                 showLoading();
+                document.getElementById('translate-btn').disabled = true;
 
                 let fileId;
 
                 if (currentFile) {
                     // Upload file
-                    const uploadResponse = await api.uploadFile(currentFile, (progress) => {
-                        console.log(`Upload progress: ${progress}%`);
-                    });
+                    const uploadResponse = await api.uploadFile(currentFile);
                     fileId = uploadResponse.file_id;
                 } else if (urlInput) {
                     // Use URL
                     fileId = urlInput;
                 } else {
-                    throw new Error('Please select a file or enter a URL');
+                    throw new Error('请选择文件或输入链接');
                 }
 
                 // Get page selection
@@ -258,26 +368,20 @@
                 const result = await api.startTranslation(fileId, translationSettings);
                 currentTaskId = result.task_id;
 
-                // 切换到进度状态
-                document.getElementById('result-card').style.display = 'block';
-                document.getElementById('progress-section').style.display = 'block';
-                document.getElementById('download-section').style.display = 'none';
-                document.getElementById('idle-section').style.display = 'none';
+                setResultState('progress');
 
                 // Start polling for progress
                 startProgressPolling();
 
             } catch (error) {
-                showAlert('Translation failed: ' + error.message, 'error');
+                showTranslationError(`翻译失败：${error.message}`);
             } finally {
                 hideLoading();
             }
         });
 
         function startProgressPolling() {
-            if (progressInterval) {
-                clearInterval(progressInterval);
-            }
+            stopProgressPolling();
 
             progressInterval = setInterval(async () => {
                 try {
@@ -290,49 +394,28 @@
                     const progressDetail = document.getElementById('progress-detail');
 
                     progressFill.style.width = (status.progress || 0) + '%';
-                    progressText.textContent = status.message || status.status || 'Processing...';
+                    progressText.textContent = status.message || status.status || '处理中...';
                     progressDetail.textContent = status.detail || '';
 
                     // Check if complete
                     if (status.status === 'completed') {
-                        clearInterval(progressInterval);
+                        stopProgressPolling();
                         showTranslationResult(status);
                     } else if (status.status === 'failed') {
-                        clearInterval(progressInterval);
-                        showAlert('Translation failed: ' + (status.message || status.error || 'Unknown error'), 'error');
-                        document.getElementById('progress-card').style.display = 'none';
+                        stopProgressPolling();
+                        showTranslationError(status.message || status.error || '未知错误');
                     }
                 } catch (error) {
                     console.error('Error polling status:', error);
-                    clearInterval(progressInterval);
-                    showAlert('Error checking translation status', 'error');
+                    stopProgressPolling();
+                    showTranslationError('获取翻译状态失败');
                 }
             }, 2000); // Poll every 2 seconds
         }
 
         function showTranslationResult(status) {
-            // 切换到结果状态
-            document.getElementById('result-card').style.display = 'block';
-            document.getElementById('progress-section').style.display = 'none';
-            document.getElementById('download-section').style.display = 'block';
-            document.getElementById('idle-section').style.display = 'none';
-
-            // Get output files from status
-            const outputFiles = status.output_files || {};
-            const monoPath = outputFiles.mono;
-            const dualPath = outputFiles.dual;
-
-            // Show download buttons based on available files
-            const monoBtn = document.getElementById('download-mono-btn');
-            const dualBtn = document.getElementById('download-dual-btn');
-            monoBtn.style.display = monoPath ? 'block' : 'none';
-            dualBtn.style.display = dualPath ? 'block' : 'none';
-            if (monoPath) {
-                monoBtn.onclick = () => downloadFile('mono');
-            }
-            if (dualPath) {
-                dualBtn.onclick = () => downloadFile('dual');
-            }
+            setResultState('result');
+            document.getElementById('translate-btn').disabled = false;
 
             // Reload history
             loadHistory();
@@ -379,23 +462,22 @@
                 window.URL.revokeObjectURL(url);
             } catch (error) {
                 console.error('Download error:', error);
-                alert('Download failed: ' + error.message);
+                showAlert('下载失败：' + error.message, 'error');
             }
         }
 
-        // New translation button
-        document.getElementById('new-translation-btn').addEventListener('click', () => {
-            currentFile = null;
-            currentTaskId = null;
-            fileInput.value = '';
-            document.getElementById('url-input').value = '';
-            document.getElementById('translate-btn').disabled = true;
-            // 切换到空闲状态
-            document.getElementById('progress-section').style.display = 'none';
-            document.getElementById('download-section').style.display = 'none';
-            document.getElementById('idle-section').style.display = 'block';
-            uploadZone.querySelector('.upload-text').textContent = i18n.t('upload.drag');
-            uploadZone.querySelector('.upload-hint').textContent = i18n.t('upload.browse');
+        document.getElementById('retry-translation-btn').addEventListener('click', () => {
+            const hasInput = currentFile || document.getElementById('url-input').value.trim();
+            setResultState('idle');
+            if (hasInput) {
+                document.getElementById('translate-btn').disabled = false;
+                document.getElementById('translate-btn').click();
+            }
+        });
+
+        document.getElementById('dismiss-error-btn').addEventListener('click', () => {
+            resetTranslationState({ keepInput: true });
+            document.getElementById('translate-btn').disabled = false;
         });
 
         // Load translation history
@@ -411,36 +493,31 @@
                 }
 
                 historyList.innerHTML = history.map(item => {
-                    const statusColor = item.status === 'completed' ? 'var(--accent-success)' : item.status === 'failed' ? 'var(--accent-error)' : 'var(--accent-warning)';
-                    const originalName = item.original_filename || item.filename?.split('_').slice(1).join('_') || item.filename || 'Untitled';
+                    const statusColor = item.status === 'completed' ? 'var(--accent-primary)' : item.status === 'failed' ? 'var(--accent-error)' : 'var(--accent-warning)';
+                    const originalName = getDisplayFilename(item);
+                    const isLatest = item.task_id === currentTaskId;
 
                     return `
-                    <div class="history-item" style="display: flex; align-items: stretch; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 0.75rem; overflow: hidden; border: 1px solid var(--border-color);">
-                        <!-- Status indicator bar -->
-                        <div class="history-status-bar" style="width: 6px; background: ${statusColor}; flex-shrink: 0;"></div>
-                        
-                        <!-- Main content -->
-                        <div style="flex: 1; padding: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem;">
-                            <!-- Filename -->
-                            <div style="flex: 1; min-width: 150px;">
-                                <div style="font-weight: 500; word-break: break-all; font-size: 0.9rem;" title="${item.filename}">${originalName}</div>
+                    <article class="history-item${isLatest ? ' is-latest' : ''}">
+                        <div class="history-status-bar" style="background: ${statusColor};"></div>
+                        <div class="history-content">
+                            <div class="history-main">
+                                <div class="history-title-row">
+                                    <div class="history-title" title="${item.filename}">${originalName}</div>
+                                    ${isLatest ? `<span class="history-latest-badge">${i18n.t('upload.activity.latest')}</span>` : ''}
+                                </div>
+                                <div class="history-meta">${formatDate(item.created_at)}</div>
                             </div>
-                            
-                            <!-- Action buttons -->
-                            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+
+                            <div class="history-actions">
                                 ${item.status === 'completed' && item.mono_path ?
                             `<button class="btn btn-sm" style="background: var(--accent-primary); color: white;" onclick="downloadFile('mono', '${item.task_id}')">${i18n.t('upload.result.mono').replace('📥 ', '')}</button>` : ''}
                                 ${item.status === 'completed' && item.dual_path ?
-                            `<button class="btn btn-sm" style="background: #52b596; color: white;" onclick="downloadFile('dual', '${item.task_id}')">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
-                                <button class="btn btn-sm" style="background: var(--accent-error); color: white;" onclick="deleteHistoryItem('${item.task_id}')" title="${i18n.t('common.delete')}">🗑️</button>
-                            </div>
-                            
-                            <!-- Timestamp -->
-                            <div style="color: var(--text-muted); font-size: 0.8rem; white-space: nowrap;">
-                                ${formatDate(item.created_at)}
+                            `<button class="btn btn-sm btn-secondary" onclick="downloadFile('dual', '${item.task_id}')">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
+                                <button class="btn btn-sm btn-secondary" onclick="deleteHistoryItem('${item.task_id}')" title="${i18n.t('common.delete')}">${i18n.t('common.delete')}</button>
                             </div>
                         </div>
-                    </div>
+                    </article>
                 `;
                 }).join('');
             } catch (error) {
@@ -449,7 +526,15 @@
         }
 
         async function deleteHistoryItem(taskId) {
-            if (!confirm(i18n.t('upload.history.delete.confirm'))) {
+            const confirmed = await showConfirmDialog({
+                title: '删除翻译记录',
+                message: i18n.t('upload.history.delete.confirm'),
+                confirmText: i18n.t('common.delete'),
+                cancelText: i18n.t('common.cancel'),
+                confirmType: 'danger',
+            });
+
+            if (!confirmed) {
                 return;
             }
             try {
@@ -468,10 +553,7 @@
                 await requireAuth();
                 await updateUserInfo();
                 await loadHistory();
-                // 页面初始为“空闲”状态
-                document.getElementById('progress-section').style.display = 'none';
-                document.getElementById('download-section').style.display = 'none';
-                document.getElementById('idle-section').style.display = 'block';
+                setResultState('idle');
             } catch (error) {
                 console.error('Initialization error:', error);
             }

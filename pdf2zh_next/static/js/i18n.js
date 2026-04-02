@@ -1,6 +1,5 @@
 /**
  * Internationalization (i18n) support
- * Supports English and Chinese
  */
 
 const translations = {
@@ -54,6 +53,19 @@ const translations = {
         'upload.history.delete.confirm': 'Are you sure you want to delete this translation? This will also delete the original and translated files.',
         'upload.history.delete.success': 'Translation deleted successfully',
         'upload.history.delete.failed': 'Failed to delete: ',
+        'upload.activity.title': 'Activity',
+        'upload.activity.current': 'Current task',
+        'upload.activity.recent': 'Recent files',
+        'upload.activity.ready': 'Ready to translate',
+        'upload.activity.progress': 'Translation in progress',
+        'upload.activity.progress.help': 'Your PDF is being processed.',
+        'upload.activity.complete': 'Translation complete',
+        'upload.activity.complete.help': 'Use the latest item below to download your result.',
+        'upload.activity.error': 'Translation needs attention',
+        'upload.activity.error.help': 'You can retry or reset and start over.',
+        'upload.activity.finished': 'Translation finished',
+        'upload.activity.finished.help': 'Use the latest item below to download your result.',
+        'upload.activity.latest': 'Latest',
 
         // Settings Page
         'settings.title': 'Settings',
@@ -135,7 +147,9 @@ const translations = {
         'settings.users.registration.disabled': 'Registration is currently disabled',
 
         // Common
-        'common.loading': 'Loading...',
+        'common.loading': '加载中...',
+        'common.retry': 'Retry',
+        'common.reset_short': 'Reset',
         'common.save': 'Save',
         'common.cancel': 'Cancel',
         'common.delete': 'Delete',
@@ -228,6 +242,19 @@ const translations = {
         'upload.history.delete.confirm': '确定要删除这个翻译记录吗？这将同时删除原文件和翻译后的文件。',
         'upload.history.delete.success': '删除成功',
         'upload.history.delete.failed': '删除失败：',
+        'upload.activity.title': '翻译活动',
+        'upload.activity.current': '当前任务',
+        'upload.activity.recent': '最近记录',
+        'upload.activity.ready': '准备就绪',
+        'upload.activity.progress': '翻译进行中',
+        'upload.activity.progress.help': 'PDF 正在处理中。',
+        'upload.activity.complete': '翻译完成',
+        'upload.activity.complete.help': '请在下方最近记录中下载结果。',
+        'upload.activity.error': '翻译需要处理',
+        'upload.activity.error.help': '你可以重试，或重置后重新开始。',
+        'upload.activity.finished': '翻译已完成',
+        'upload.activity.finished.help': '请在下方最近记录中下载结果。',
+        'upload.activity.latest': '最新',
 
         // Settings Page
         'settings.title': '设置',
@@ -310,6 +337,8 @@ const translations = {
 
         // Common
         'common.loading': '加载中...',
+        'common.retry': '重试',
+        'common.reset_short': '重置',
         'common.save': '保存',
         'common.cancel': '取消',
         'common.delete': '删除',
@@ -354,7 +383,7 @@ const translations = {
 };
 
 // Current language
-let currentLang = localStorage.getItem('app_lang') || 'en';
+let currentLang = 'zh';
 
 /**
  * Get translation for a key
@@ -372,8 +401,8 @@ function setLanguage(lang) {
         return;
     }
 
-    currentLang = lang;
-    localStorage.setItem('app_lang', lang);
+    currentLang = 'zh';
+    localStorage.setItem('app_lang', 'zh');
 
     // Update all elements with data-i18n attribute
     document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -390,38 +419,13 @@ function setLanguage(lang) {
         }
     });
 
-    // Update language selector if exists
-    const langSelector = document.getElementById('lang-selector');
-    if (langSelector) {
-        langSelector.value = lang;
-    }
 }
 
 /**
  * Initialize i18n
  */
 function initI18n() {
-    // Set initial language
-    setLanguage(currentLang);
-
-    // Add language selector to navigation if not exists
-    const nav = document.querySelector('.nav-links');
-    if (nav && !document.getElementById('lang-selector')) {
-        const langItem = document.createElement('li');
-        langItem.innerHTML = `
-            <select id="lang-selector" class="form-select" style="padding: 0.5rem; font-size: 0.875rem; background: transparent; border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-primary); cursor: pointer;">
-                <option value="en">English</option>
-                <option value="zh">中文</option>
-            </select>
-        `;
-        nav.insertBefore(langItem, nav.firstChild);
-
-        const selector = document.getElementById('lang-selector');
-        selector.value = currentLang;
-        selector.addEventListener('change', (e) => {
-            setLanguage(e.target.value);
-        });
-    }
+    setLanguage('zh');
 }
 
 // Auto-initialize on DOM load

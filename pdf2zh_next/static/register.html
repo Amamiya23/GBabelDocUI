@@ -1,32 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="register.title">Create Account - PDFMathTranslate</title>
-    <link rel="stylesheet" href="/static/css/style.css">
-    <script src="/static/js/i18n.js"></script>
+    <title data-i18n="register.title">注册 - PDFTranslate</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/i18n.js"></script>
 </head>
 
 <body>
-    <div class="page-wrapper flex flex-center">
+    <div class="page-wrapper">
+        <header class="header">
+            <div class="container">
+                <nav class="nav">
+                    <div class="logo">PDFTranslate</div>
+                    <ul class="nav-links"></ul>
+                </nav>
+            </div>
+        </header>
+
+        <div class="page-wrapper flex flex-center">
         <div class="container" style="max-width: 500px; width: 100%;">
             <div class="glass-card fade-in" style="max-width: 100%;">
                 <div class="card-header text-center">
-                    <h1 class="logo mb-sm">PDFMathTranslate</h1>
-                    <p class="card-subtitle" id="subtitle" data-i18n="register.subtitle">Register a new account</p>
+                    <p class="card-subtitle" id="subtitle" data-i18n="register.subtitle">注册新账户</p>
                 </div>
 
                 <div class="card-body">
                     <!-- Registration Disabled Message -->
                     <div id="disabled-message" class="alert alert-warning" style="display: none;">
-                        <strong data-i18n="register.disabled.title">Registration Disabled</strong><br>
-                        <span data-i18n="register.disabled.message">New user registration is currently disabled. Please
-                            contact an administrator.</span>
+                        <strong data-i18n="register.disabled.title">注册已关闭</strong><br>
+                        <span data-i18n="register.disabled.message">当前暂不开放新用户注册，请联系管理员。</span>
                     </div>
 
                     <!-- Registration Form -->
@@ -47,7 +55,7 @@
 
                         <div class="form-group">
                             <label class="form-label" for="passwordConfirm"
-                                data-i18n="register.password.confirm">Confirm Password</label>
+                                data-i18n="register.password.confirm">确认密码</label>
                             <input type="password" id="passwordConfirm" class="form-input"
                                 placeholder="" data-i18n="register.password.confirm" required>
                         </div>
@@ -56,7 +64,7 @@
 
                         <button type="submit" class="btn btn-primary btn-block btn-lg mt-md"
                             data-i18n="register.btn.register">
-                            <span data-i18n="register.btn.register">Register</span>
+                            <span data-i18n="register.btn.register">注册</span>
                         </button>
                     </form>
                 </div>
@@ -67,6 +75,7 @@
                     </p>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 

@@ -1,32 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - PDFMathTranslate</title>
-  <link rel="stylesheet" href="/static/css/style.css">
-  <script src="/static/js/i18n.js"></script>
+  <title>登录 - PDFTranslate</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script src="/static/js/i18n.js"></script>
 </head>
 
 <body>
-  <div class="page-wrapper flex flex-center">
-    <div class="container" style="max-width: 500px; width: 100%;">
+  <div class="page-wrapper">
+    <header class="header">
+      <div class="container">
+        <nav class="nav">
+          <div class="logo">PDFTranslate</div>
+          <ul class="nav-links"></ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="page-wrapper flex flex-center">
+      <div class="container" style="max-width: 500px; width: 100%;">
       <div class="glass-card fade-in" style="max-width: 100%;">
         <div class="card-header text-center">
-          <h1 class="logo mb-sm">PDFMathTranslate</h1>
-          <p class="card-subtitle" id="subtitle" data-i18n="login.welcome">Welcome back! Please login to continue.</p>
+          <p class="card-subtitle" id="subtitle" data-i18n="login.welcome">欢迎回来，请登录后继续。</p>
         </div>
 
         <div class="card-body">
           <!-- Setup Form (shown only on first run) -->
           <form id="setupForm" style="display: none;">
             <div class="alert alert-info mb-md">
-              <strong data-i18n="login.setup.info">Initial Setup</strong><br>
-              <span data-i18n="login.setup.desc">Create your admin account to get started.</span>
+              <strong data-i18n="login.setup.info">初始设置</strong><br>
+              <span data-i18n="login.setup.desc">创建管理员账户后即可开始使用。</span>
             </div>
 
             <div class="form-group">
@@ -52,8 +61,8 @@
 
             <div id="setupError" class="form-error" style="display: none;"></div>
 
-            <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="login.btn.setup">
-              Create Admin Account
+              <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="login.btn.setup">
+              创建管理员账户
             </button>
           </form>
 
@@ -72,19 +81,18 @@
             <div id="loginError" class="form-error" style="display: none;"></div>
 
             <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="login.btn.login">
-              Login
+              登录
             </button>
           </form>
         </div>
 
         <div class="card-footer text-center">
           <p class="text-muted" style="font-size: var(--font-size-sm);" id="registration-link" style="display: none;">
-            <a href="/register.html" class="text-primary" data-i18n="register.link.from_login">Don't have an account?
-              Register</a>
+            <a href="/register.html" class="text-primary" data-i18n="register.link.from_login">没有账户？去注册</a>
           </p>
           <form id="registerForm" style="display: none;">
-            <h2 class="text-center" data-i18n="register.title">Create Account</h2>
-            <p class="text-center mb-md" data-i18n="register.subtitle">Register a new account</p>
+            <h2 class="text-center" data-i18n="register.title">创建账户</h2>
+            <p class="text-center mb-md" data-i18n="register.subtitle">注册新账户</p>
             <div class="form-group">
               <label class="form-label" for="registerUsername" data-i18n="register.username">Username</label>
               <input type="text" id="registerUsername" class="form-input" placeholder="" data-i18n="register.username" required minlength="3">
@@ -100,16 +108,14 @@
               <input type="password" id="registerPasswordConfirm" class="form-input" placeholder="" data-i18n="register.password.confirm" required>
             </div>
             <div id="registerError" class="form-error" style="display: none;"></div>
-            <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="register.btn.register">Register</button>
+            <button type="submit" class="btn btn-primary btn-block btn-lg mt-md" data-i18n="register.btn.register">注册</button>
             <p class="text-center mt-md">
-              <a href="/login.html" class="text-primary" data-i18n="register.link.login">Already have an account? Login</a>
+              <a href="/login.html" class="text-primary" data-i18n="register.link.login">已有账户？登录</a>
             </p>
           </form>
-          <p class="text-muted" style="font-size: var(--font-size-sm);">
-            <span id="app-version">GBabelDocUI - Secure Multi-User System For CH</span>
-          </p>
         </div>
       </div>
+    </div>
     </div>
   </div>
 
@@ -127,11 +133,6 @@
     async function checkSetupStatus() {
       try {
         const status = await api.checkAuthStatus();
-
-        // Update version display
-        if (status.version) {
-          document.getElementById('app-version').textContent = `GBabelDocUI v${status.version} - Secure Multi-User System for CH`;
-        }
 
         if (status.setup_required) {
           // Show setup form

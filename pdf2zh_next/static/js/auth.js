@@ -70,7 +70,7 @@ function displayUserInfo() {
 /**
  * Show loading overlay
  */
-function showLoading(message = 'Loading...') {
+function showLoading(message = '加载中...') {
     let overlay = document.getElementById('loading-overlay');
 
     if (!overlay) {
@@ -146,6 +146,75 @@ function showAlert(message, type = 'info') {
         alertDiv.style.transition = 'all 0.3s ease';
         setTimeout(() => alertDiv.remove(), 300);
     }, 3000);
+}
+
+/**
+ * Show inline confirm dialog in app style.
+ */
+function showConfirmDialog({
+    title = '请确认',
+    message = '',
+    confirmText = '确认',
+    cancelText = '取消',
+    confirmType = 'primary',
+} = {}) {
+    return new Promise((resolve) => {
+        const existing = document.getElementById('confirm-dialog-overlay');
+        if (existing) {
+            existing.remove();
+        }
+
+        const overlay = document.createElement('div');
+        overlay.id = 'confirm-dialog-overlay';
+        overlay.className = 'confirm-dialog-overlay';
+
+        const confirmButtonClass = confirmType === 'danger' ? 'btn-danger' : 'btn-primary';
+
+        overlay.innerHTML = `
+            <div class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title">
+                <div class="confirm-dialog-header">
+                    <h3 id="confirm-dialog-title" class="confirm-dialog-title">${title}</h3>
+                    <p class="confirm-dialog-message">${message}</p>
+                </div>
+                <div class="confirm-dialog-actions">
+                    <button type="button" class="btn btn-secondary" data-confirm-cancel>${cancelText}</button>
+                    <button type="button" class="btn ${confirmButtonClass}" data-confirm-ok>${confirmText}</button>
+                </div>
+            </div>
+        `;
+
+        const cleanup = (result) => {
+            overlay.remove();
+            resolve(result);
+        };
+
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                cleanup(false);
+            }
+        });
+
+        const handleEscape = (event) => {
+            if (event.key === 'Escape') {
+                document.removeEventListener('keydown', handleEscape);
+                cleanup(false);
+            }
+        };
+
+        document.addEventListener('keydown', handleEscape);
+
+        overlay.querySelector('[data-confirm-cancel]').addEventListener('click', () => {
+            document.removeEventListener('keydown', handleEscape);
+            cleanup(false);
+        });
+        overlay.querySelector('[data-confirm-ok]').addEventListener('click', () => {
+            document.removeEventListener('keydown', handleEscape);
+            cleanup(true);
+        });
+
+        document.body.appendChild(overlay);
+        overlay.querySelector('[data-confirm-ok]').focus();
+    });
 }
 
 /**
