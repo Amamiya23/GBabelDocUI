@@ -5,7 +5,7 @@
 基于 [PDFMathTranslate-next](https://github.com/PDFMathTranslate-next/PDFMathTranslate-next) 及[eaiu/GBabelDocUI: 基于 「PDFMathTranslate-next」 开发的非破坏式多用户 Web UI。](https://github.com/eaiu/GBabelDocUI)简单修改。
 
 由管理员设置全局配置，所有用户使用一套配置，降低门槛，部署后其他人无需设置，方便他人使用并且避免泄露自己的api。
-![alt text](image-1.png)
+![alt text](assets/image.png)
 
 
 ## 教程
