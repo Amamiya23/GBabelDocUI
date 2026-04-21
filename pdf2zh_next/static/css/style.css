@@ -771,7 +771,7 @@ input[type="radio"] {
   transition: border-color var(--transition-base), background var(--transition-base), box-shadow var(--transition-base);
 }
 
-.result-state-section {
+#result-card .result-state-section {
   display: none;
 }
 
@@ -1089,13 +1089,17 @@ input[type="radio"] {
 }
 
 .upload-page-grid {
-    align-items: stretch;
+    align-items: start;
 }
 
 .grid-2 > div > .card {
     width: 100%;
-    height: 100%;
     min-height: 0;
+}
+
+#activity-panel-column > .card,
+#activity-panel-card {
+    height: 100%;
 }
 
 .activity-panel {

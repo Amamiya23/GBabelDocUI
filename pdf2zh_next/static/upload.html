@@ -547,6 +547,7 @@
 
                 if (history.length === 0) {
                     historyList.innerHTML = `<p class="text-center text-muted">${i18n.t('upload.history.empty')}</p>`;
+                    syncActivityPanelHeight();
                     return;
                 }
 
