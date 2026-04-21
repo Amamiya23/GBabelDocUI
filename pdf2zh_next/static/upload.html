@@ -65,10 +65,10 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="container">
-                <div class="grid grid-2">
+                <div class="grid grid-2 upload-page-grid">
                     <!-- Upload Section -->
-                    <div>
-                        <div class="card upload-panel">
+                    <div id="upload-panel-column">
+                        <div class="card upload-panel" id="upload-panel-card">
                             <div class="card-header">
                                 <h2 class="card-title" data-i18n="upload.title">上传 PDF</h2>
                                 <p class="card-subtitle" data-i18n="upload.subtitle">上传文件或输入链接开始翻译</p>
@@ -124,23 +124,23 @@
                     </div>
 
                     <!-- History Section -->
-                    <div>
-                        <div class="card activity-panel">
+                    <div id="activity-panel-column">
+                        <div class="card activity-panel" id="activity-panel-card">
                             <div class="card-body">
-                                <section class="activity-status-panel" id="result-card">
+                                <section class="activity-status-panel" id="result-card" data-state="idle">
                                     <div class="activity-status-header">
-                                        <p class="section-eyebrow" data-i18n="upload.activity.current">当前任务</p>
+                                        <span class="activity-status-pill" id="result-status-pill">准备就绪</span>
                                         <h3 class="card-title" id="result-card-title" data-i18n="upload.result.title">翻译结果</h3>
-                                        <p class="card-subtitle" id="result-card-subtitle" data-i18n="upload.activity.ready">准备就绪</p>
                                     </div>
-                                    <div id="progress-section" style="display: none;">
+                                    <div id="progress-section" class="result-state-section">
+                                        <p class="activity-status-caption" data-i18n="upload.activity.progress.help">PDF 正在处理中。</p>
                                         <div class="progress-bar mb-md">
                                             <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
                                         </div>
                                         <p id="progress-text" class="text-center text-muted" data-i18n="upload.progress.init">初始化中...</p>
                                         <p id="progress-detail" class="text-center activity-helper-text"></p>
                                     </div>
-                                    <div id="error-section" class="alert alert-error" style="display: none;">
+                                    <div id="error-section" class="alert alert-error result-state-section">
                                         <strong id="error-title" data-i18n="upload.activity.error">翻译需要处理</strong>
                                         <p id="error-message" style="margin: 0.5rem 0 0; color: inherit;"></p>
                                         <div class="mt-md flex gap-sm">
@@ -152,23 +152,25 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <div id="success-section" style="display: none;">
+                                    <div id="success-section" class="result-state-section">
                                         <div class="activity-complete-note activity-state-box">
                                             <p class="activity-complete-title" data-i18n="upload.activity.finished">翻译已完成</p>
                                             <p class="activity-helper-text" data-i18n="upload.activity.finished.help">请在下方最近记录中下载结果。</p>
+                                            <div class="activity-complete-actions">
+                                                <button class="btn btn-secondary btn-sm" id="view-latest-result-btn" data-i18n="upload.activity.view_latest">查看最新记录</button>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div id="idle-section" class="text-center text-muted activity-idle activity-state-box" style="display: block;">
+                                    <div id="idle-section" class="text-center text-muted activity-idle activity-state-box result-state-section">
                                         <span data-i18n="upload.activity.ready">准备就绪</span>
                                     </div>
                                 </section>
 
                                 <div class="section-divider"></div>
 
-                                <section>
+                                <section class="activity-history-section">
                                     <div class="activity-list-header">
                                         <div>
-                                            <p class="section-eyebrow" data-i18n="upload.activity.recent">最近记录</p>
                                             <h3 class="card-title" data-i18n="upload.history.title">翻译历史</h3>
                                         </div>
                                     </div>
@@ -198,34 +200,75 @@
         let currentFile = null;
         let currentTaskId = null;
         let progressInterval = null;
+        let cardHeightObserver = null;
+
+        function syncActivityPanelHeight() {
+            const uploadPanel = document.getElementById('upload-panel-card');
+            const activityPanel = document.getElementById('activity-panel-card');
+            const activityColumn = document.getElementById('activity-panel-column');
+
+            if (!uploadPanel || !activityPanel || !activityColumn) {
+                return;
+            }
+
+            if (window.innerWidth <= 768) {
+                activityColumn.style.height = '';
+                activityPanel.style.height = '';
+                return;
+            }
+
+            const syncedHeight = `${uploadPanel.offsetHeight}px`;
+            activityColumn.style.height = syncedHeight;
+            activityPanel.style.height = syncedHeight;
+        }
+
+        function initCardHeightSync() {
+            const uploadPanel = document.getElementById('upload-panel-card');
+            if (!uploadPanel) {
+                return;
+            }
+
+            syncActivityPanelHeight();
+            window.addEventListener('resize', syncActivityPanelHeight);
+
+            if ('ResizeObserver' in window) {
+                cardHeightObserver = new ResizeObserver(() => {
+                    syncActivityPanelHeight();
+                });
+                cardHeightObserver.observe(uploadPanel);
+            }
+        }
 
         function setResultState(state, options = {}) {
-            const progressSection = document.getElementById('progress-section');
-            const successSection = document.getElementById('success-section');
-            const idleSection = document.getElementById('idle-section');
-            const errorSection = document.getElementById('error-section');
             const resultTitle = document.getElementById('result-card-title');
-            const resultSubtitle = document.getElementById('result-card-subtitle');
+            const resultCard = document.getElementById('result-card');
+            const resultStatusPill = document.getElementById('result-status-pill');
 
-            progressSection.style.display = state === 'progress' ? 'block' : 'none';
-            successSection.style.display = state === 'result' ? 'block' : 'none';
-            idleSection.style.display = state === 'idle' ? 'block' : 'none';
-            errorSection.style.display = state === 'error' ? 'block' : 'none';
+            resultCard.dataset.state = state;
 
             if (state === 'progress') {
-                resultTitle.textContent = i18n.t('upload.activity.progress');
-                resultSubtitle.textContent = options.subtitle || i18n.t('upload.activity.progress.help');
+                resultTitle.textContent = i18n.t('upload.activity.progress.title');
+                resultStatusPill.textContent = i18n.t('upload.activity.pill.progress');
             } else if (state === 'result') {
-                resultTitle.textContent = i18n.t('upload.activity.complete');
-                resultSubtitle.textContent = options.subtitle || i18n.t('upload.activity.complete.help');
+                resultTitle.textContent = i18n.t('upload.activity.complete.title');
+                resultStatusPill.textContent = i18n.t('upload.activity.pill.complete');
             } else if (state === 'error') {
-                resultTitle.textContent = i18n.t('upload.activity.error');
-                resultSubtitle.textContent = i18n.t('upload.activity.error.help');
+                resultTitle.textContent = i18n.t('upload.activity.error.title');
+                resultStatusPill.textContent = i18n.t('upload.activity.pill.error');
                 document.getElementById('error-message').textContent = options.message || '未知错误';
             } else {
                 resultTitle.textContent = i18n.t('upload.result.title');
-                resultSubtitle.textContent = i18n.t('upload.activity.ready');
+                resultStatusPill.textContent = i18n.t('upload.activity.pill.ready');
             }
+        }
+
+        function scrollToLatestHistory() {
+            const latestItem = document.querySelector('.history-item.is-latest');
+            if (!latestItem) {
+                return;
+            }
+
+            latestItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function stopProgressPolling() {
@@ -273,6 +316,16 @@
             );
 
             return strippedFilename || filename || 'Untitled';
+        }
+
+        function getHistoryStatusClass(item) {
+            if (item.status === 'completed') {
+                return 'history-item-completed';
+            }
+            if (item.status === 'failed') {
+                return 'history-item-failed';
+            }
+            return 'history-item-pending';
         }
 
         // Page range selection
@@ -422,6 +475,10 @@
             loadHistory();
         }
 
+        document.getElementById('view-latest-result-btn').addEventListener('click', () => {
+            scrollToLatestHistory();
+        });
+
         async function downloadFile(fileType, taskId = null) {
             const downloadTaskId = taskId || currentTaskId;
             if (!downloadTaskId) {
@@ -494,13 +551,12 @@
                 }
 
                 historyList.innerHTML = history.map(item => {
-                    const statusColor = item.status === 'completed' ? 'var(--accent-primary)' : item.status === 'failed' ? 'var(--accent-error)' : 'var(--accent-warning)';
                     const originalName = getDisplayFilename(item);
                     const isLatest = item.task_id === currentTaskId;
 
                     return `
-                    <article class="history-item${isLatest ? ' is-latest' : ''}">
-                        <div class="history-status-bar" style="background: ${statusColor};"></div>
+                    <article class="history-item ${getHistoryStatusClass(item)}${isLatest ? ' is-latest' : ''}">
+                        <div class="history-status-bar"></div>
                         <div class="history-content">
                             <div class="history-main">
                                 <div class="history-title-row">
@@ -512,19 +568,47 @@
 
                             <div class="history-actions">
                                 ${item.status === 'completed' && item.mono_path ?
-                            `<button class="btn btn-sm" style="background: var(--accent-primary); color: white;" onclick="downloadFile('mono', '${item.task_id}')">${i18n.t('upload.result.mono').replace('📥 ', '')}</button>` : ''}
+                            `<button class="btn btn-sm btn-primary" data-action="download" data-file-type="mono" data-task-id="${item.task_id}">${i18n.t('upload.result.mono').replace('📥 ', '')}</button>` : ''}
                                 ${item.status === 'completed' && item.dual_path ?
-                            `<button class="btn btn-sm btn-secondary" onclick="downloadFile('dual', '${item.task_id}')">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
-                                <button class="btn btn-sm btn-secondary" onclick="deleteHistoryItem('${item.task_id}')" title="${i18n.t('common.delete')}">${i18n.t('common.delete')}</button>
+                            `<button class="btn btn-sm btn-secondary" data-action="download" data-file-type="dual" data-task-id="${item.task_id}">${i18n.t('upload.result.dual').replace('📥 ', '')}</button>` : ''}
+                                <button class="btn btn-sm btn-secondary" data-action="delete-history" data-task-id="${item.task_id}" title="${i18n.t('common.delete')}">${i18n.t('common.delete')}</button>
                             </div>
                         </div>
                     </article>
                 `;
                 }).join('');
+
+                if (currentTaskId) {
+                    requestAnimationFrame(() => {
+                        scrollToLatestHistory();
+                    });
+                }
+
+                syncActivityPanelHeight();
+
             } catch (error) {
                 console.error('Error loading history:', error);
             }
         }
+
+        document.getElementById('history-list').addEventListener('click', async (event) => {
+            const actionButton = event.target.closest('[data-action]');
+            if (!actionButton) {
+                return;
+            }
+
+            const action = actionButton.dataset.action;
+            const taskId = actionButton.dataset.taskId;
+
+            if (action === 'download') {
+                await downloadFile(actionButton.dataset.fileType, taskId);
+                return;
+            }
+
+            if (action === 'delete-history') {
+                await deleteHistoryItem(taskId);
+            }
+        });
 
         async function deleteHistoryItem(taskId) {
             const confirmed = await showConfirmDialog({
@@ -553,6 +637,7 @@
             try {
                 await requireAuth();
                 await updateUserInfo();
+                initCardHeightSync();
                 await loadHistory();
                 setResultState('idle');
             } catch (error) {

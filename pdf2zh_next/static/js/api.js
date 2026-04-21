@@ -181,6 +181,13 @@ class APIClient {
   }
 
   /**
+   * Get admin usage analytics
+   */
+  async getUsageAnalytics(days = 30) {
+    return this.request(`/api/admin/analytics?days=${days}`);
+  }
+
+  /**
    * Public user registration
    */
   async registerPublic(username, password) {

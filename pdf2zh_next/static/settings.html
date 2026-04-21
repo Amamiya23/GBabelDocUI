@@ -80,6 +80,7 @@
 <button class="tab-button" data-tab="rate-limit" data-i18n="settings.tab.rate">Rate Limiting</button>
 <button class="tab-button" data-tab="babeldoc" data-i18n="settings.tab.babeldoc">BabelDOC</button>
 <button class="tab-button" data-tab="user-mgmt" id="user-mgmt-tab" style="display: none;" data-i18n="settings.tab.users">User Management</button>
+<button class="tab-button" data-tab="analytics" id="analytics-tab" style="display: none;" data-i18n="settings.tab.analytics">使用分析</button>
                     </div>
 
                     <!-- Tab: Account Settings -->
@@ -909,6 +910,55 @@
                         </div>
                     </div>
 
+                    <div class="tab-content" id="tab-analytics">
+                        <h3 data-i18n="settings.analytics.title">使用分析</h3>
+                        <p class="card-subtitle" data-i18n="settings.analytics.subtitle">管理员查看最近翻译使用情况</p>
+                        <p class="form-help" data-i18n="settings.analytics.scope">以下统计基于所选时间范围内新创建的翻译任务。</p>
+
+                        <div class="card mb-lg">
+                            <div class="card-body">
+                                <div class="flex flex-between" style="gap: 1rem; align-items: end; flex-wrap: wrap;">
+                                    <div class="form-group" style="min-width: 180px; margin-bottom: 0;">
+                                        <label class="form-label" for="analytics-days" data-i18n="settings.analytics.window">统计时间</label>
+                                        <select class="form-select" id="analytics-days">
+                                            <option value="7" data-i18n="settings.analytics.days7">最近 7 天</option>
+                                            <option value="30" selected data-i18n="settings.analytics.days30">最近 30 天</option>
+                                            <option value="90" data-i18n="settings.analytics.days90">最近 90 天</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary" id="refresh-analytics-btn" data-i18n="settings.analytics.refresh">刷新统计</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-lg">
+                            <div class="card-header">
+                                <h4 class="card-title" data-i18n="settings.analytics.overview">总览</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="analytics-overview"></div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-lg">
+                            <div class="card-header">
+                                <h4 class="card-title" data-i18n="settings.analytics.users">用户统计</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="analytics-users"></div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="card-title" data-i18n="settings.analytics.trends">每日趋势</h4>
+                            </div>
+                            <div class="card-body">
+                                <div id="analytics-trends"></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Global Actions -->
                     <div class="card-footer mt-lg">
                         <div class="flex flex-between">
@@ -1026,6 +1076,7 @@
                 // Show user management tab for admins (check userInfo exists)
                 if (userInfo && userInfo.is_admin) {
                     document.getElementById('user-mgmt-tab').style.display = 'block';
+                    document.getElementById('analytics-tab').style.display = 'block';
                 }
 
                 // Set current username in account settings
@@ -1041,6 +1092,7 @@
                 if (userInfo && userInfo.is_admin) {
                     await loadUsers();
                     await loadRegistrationSettings();
+                    await loadAnalytics();
                 }
             } catch (error) {
                 console.error('Initialization error:', error);
@@ -1401,6 +1453,226 @@
                 showError(error);
             }
         });
+
+        function formatAnalyticsDate(value) {
+            if (!value) {
+                return '-';
+            }
+            return formatDate(value);
+        }
+
+        function formatPercent(value) {
+            return `${(value || 0).toFixed(1)}%`;
+        }
+
+        function formatAnalyticsBytes(value) {
+            if (!value) {
+                return '0 字节';
+            }
+
+            const units = ['字节', 'KB', 'MB', 'GB'];
+            const base = 1024;
+            const unitIndex = Math.min(
+                Math.floor(Math.log(value) / Math.log(base)),
+                units.length - 1,
+            );
+            const size = value / Math.pow(base, unitIndex);
+            const precision = unitIndex === 0 ? 0 : 2;
+            return `${size.toFixed(precision)} ${units[unitIndex]}`;
+        }
+
+        function renderAnalyticsState(containerId, message, type = 'muted') {
+            const container = document.getElementById(containerId);
+            const color = type === 'error' ? 'var(--accent-error)' : 'var(--text-muted)';
+            container.innerHTML = `
+                <div style="padding: 1rem 0; color: ${color};">
+                    ${message}
+                </div>
+            `;
+        }
+
+        function renderAnalyticsTable(containerId, columns, rows, emptyMessage) {
+            const container = document.getElementById(containerId);
+            if (!rows.length) {
+                renderAnalyticsState(containerId, emptyMessage || i18n.t('settings.analytics.empty'));
+                return;
+            }
+
+            const headerHtml = columns.map(column => `<th style="text-align: left; padding: 0.75rem; border-bottom: 1px solid var(--border-color);">${column.label}</th>`).join('');
+            const bodyHtml = rows.map(row => `
+                <tr>
+                    ${columns.map(column => `<td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color); vertical-align: top;">${column.render(row)}</td>`).join('')}
+                </tr>
+            `).join('');
+
+            container.innerHTML = `
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem;">
+                        <thead>
+                            <tr>${headerHtml}</tr>
+                        </thead>
+                        <tbody>
+                            ${bodyHtml}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function renderAnalyticsOverview(overview) {
+            const container = document.getElementById('analytics-overview');
+            const highlights = [
+                { label: i18n.t('settings.analytics.total_tasks'), value: (overview.total_tasks || 0).toLocaleString() },
+                { label: i18n.t('settings.analytics.active_users'), value: (overview.active_users || 0).toLocaleString() },
+                { label: i18n.t('settings.analytics.success_rate'), value: formatPercent(overview.success_rate) },
+                { label: i18n.t('settings.analytics.last_activity'), value: formatAnalyticsDate(overview.last_activity_at) },
+            ];
+            const rows = [
+                { label: i18n.t('settings.analytics.total_users'), value: overview.total_users || 0 },
+                { label: i18n.t('settings.analytics.total_tokens'), value: (overview.total_tokens || 0).toLocaleString() },
+                { label: i18n.t('settings.analytics.total_size'), value: formatAnalyticsBytes(overview.total_file_size_bytes) },
+                { label: i18n.t('settings.analytics.total_pages'), value: (overview.total_pages || 0).toLocaleString() },
+            ];
+
+            container.innerHTML = `
+                <div style="display: grid; gap: 1rem;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.75rem;">
+                        ${highlights.map(item => `
+                            <div style="padding: 1rem; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: var(--bg-card-hover);">
+                                <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.35rem;">${item.label}</div>
+                                <div style="font-size: 1.4rem; font-weight: 600; line-height: 1.2;">${item.value}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tbody>
+                            ${rows.map(row => `
+                                <tr>
+                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color); color: var(--text-muted); width: 220px;">${row.label}</td>
+                                    <td style="padding: 0.75rem; border-bottom: 1px solid var(--border-color);">${row.value}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadAnalytics() {
+            renderAnalyticsState('analytics-overview', i18n.t('settings.analytics.loading'));
+            renderAnalyticsState('analytics-users', i18n.t('settings.analytics.loading'));
+            renderAnalyticsState('analytics-trends', i18n.t('settings.analytics.loading'));
+
+            try {
+                const days = parseInt(document.getElementById('analytics-days').value, 10);
+                const response = await api.getUsageAnalytics(days);
+                const overview = response.overview || {};
+                const users = response.users || [];
+                const trends = response.trends || [];
+
+                renderAnalyticsOverview(overview);
+                renderAnalyticsTable(
+                    'analytics-users',
+                    [
+                        {
+                            label: i18n.t('settings.analytics.user'),
+                            render: user => `${user.username}${user.is_admin ? ` <span class="badge">${i18n.t('settings.analytics.admin')}</span>` : ''}`,
+                        },
+                        {
+                            label: i18n.t('settings.analytics.last_login'),
+                            render: user => formatAnalyticsDate(user.last_login),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.last_activity'),
+                            render: user => formatAnalyticsDate(user.last_activity_at),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.tasks'),
+                            render: user => (user.total_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.completed'),
+                            render: user => (user.completed_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.failed'),
+                            render: user => (user.failed_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.success_rate'),
+                            render: user => formatPercent(user.success_rate),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.tokens'),
+                            render: user => (user.total_tokens || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.file_size'),
+                            render: user => formatAnalyticsBytes(user.total_file_size_bytes),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.pages'),
+                            render: user => (user.total_pages || 0).toLocaleString(),
+                        },
+                    ],
+                    users,
+                    i18n.t('settings.analytics.empty.users'),
+                );
+                renderAnalyticsTable(
+                    'analytics-trends',
+                    [
+                        {
+                            label: i18n.t('settings.analytics.date'),
+                            render: row => row.date || '-',
+                        },
+                        {
+                            label: i18n.t('settings.analytics.active_users'),
+                            render: row => (row.active_users || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.tasks'),
+                            render: row => (row.total_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.completed'),
+                            render: row => (row.completed_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.failed'),
+                            render: row => (row.failed_tasks || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.success_rate'),
+                            render: row => formatPercent(row.success_rate),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.tokens'),
+                            render: row => (row.total_tokens || 0).toLocaleString(),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.file_size'),
+                            render: row => formatAnalyticsBytes(row.total_file_size_bytes),
+                        },
+                        {
+                            label: i18n.t('settings.analytics.pages'),
+                            render: row => (row.total_pages || 0).toLocaleString(),
+                        },
+                    ],
+                    trends,
+                    i18n.t('settings.analytics.empty.trends'),
+                );
+            } catch (error) {
+                renderAnalyticsState('analytics-overview', i18n.t('settings.analytics.error'), 'error');
+                renderAnalyticsState('analytics-users', i18n.t('settings.analytics.error'), 'error');
+                renderAnalyticsState('analytics-trends', i18n.t('settings.analytics.error'), 'error');
+                showError(error);
+            }
+        }
+
+        document.getElementById('refresh-analytics-btn').addEventListener('click', loadAnalytics);
+        document.getElementById('analytics-days').addEventListener('change', loadAnalytics);
 
         // Configuration Export/Import
         document.getElementById('export-config-btn').addEventListener('click', async () => {

@@ -17,7 +17,9 @@ from datetime import datetime
 from pathlib import Path
 from typing import Optional
 
+import fitz
 from fastapi import FastAPI, HTTPException, Depends, UploadFile, File, Form, Header
+from fastapi import Body
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -60,6 +62,40 @@ UUID_FILENAME_PREFIX_RE = re.compile(
 def normalize_original_filename(filename: str) -> str:
     """Remove generated UUID prefixes from stored upload filenames."""
     return UUID_FILENAME_PREFIX_RE.sub("", filename)
+
+
+def load_global_settings() -> dict:
+    """Load shared admin-managed settings."""
+    global_settings_file = Path("data/global_settings.json")
+    if global_settings_file.exists():
+        return json.loads(global_settings_file.read_text())
+    return {}
+
+
+def get_pdf_page_count(file_path: Path) -> Optional[int]:
+    """Read PDF page count for analytics if possible."""
+    try:
+        with fitz.open(file_path) as document:
+            return document.page_count
+    except Exception as e:
+        logger.warning(f"Failed to read PDF page count for {file_path}: {e}")
+        return None
+
+
+def flatten_token_usage(token_usage: dict) -> dict:
+    """Flatten token usage across translators into a single summary."""
+    summary = {
+        "prompt_tokens": 0,
+        "completion_tokens": 0,
+        "total_tokens": 0,
+        "cache_hit_prompt_tokens": 0,
+    }
+    for usage in token_usage.values():
+        summary["prompt_tokens"] += usage.get("prompt", 0) or 0
+        summary["completion_tokens"] += usage.get("completion", 0) or 0
+        summary["total_tokens"] += usage.get("total", 0) or 0
+        summary["cache_hit_prompt_tokens"] += usage.get("cache_hit_prompt", 0) or 0
+    return summary
 
 
 # Pydantic models for request/response
@@ -480,16 +516,8 @@ async def register_public(request: RegisterRequest):
 @app.get("/api/settings")
 async def get_settings(current_user: dict = Depends(get_current_user)):
     """获取全局设置，所有用户都读取 data/global_settings.json"""
-    global_settings_file = Path("data/global_settings.json")
-    if global_settings_file.exists():
-        settings = json.loads(global_settings_file.read_text())
-    else:
-        settings = {}
+    settings = load_global_settings()
     return {"success": True, "settings": settings}
-
-
-from fastapi import Body
-
 
 @app.post("/api/settings")
 async def update_settings(
@@ -523,6 +551,20 @@ async def reset_settings(admin_user: dict = Depends(get_admin_user)):
     global_settings_file.parent.mkdir(parents=True, exist_ok=True)
     global_settings_file.write_text("{}")
     return {"success": True, "message": "全局设置已重置"}
+
+
+@app.get("/api/admin/analytics")
+async def get_usage_analytics(
+    days: int = 30, admin_user: dict = Depends(get_admin_user)
+):
+    """Return admin usage analytics for the selected date window."""
+    safe_days = min(max(days, 1), 365)
+    return {
+        "success": True,
+        "overview": user_manager.get_usage_analytics_overview(safe_days),
+        "users": user_manager.get_usage_analytics_users(safe_days),
+        "trends": user_manager.get_usage_analytics_trends(safe_days),
+    }
 
 
 @app.get("/api/settings/export")
@@ -650,11 +692,14 @@ async def upload_file(
         content = await file.read()
         f.write(content)
 
+    file_size_bytes = file_path.stat().st_size
+
     return {
         "success": True,
         "file_id": file_id,
         "filename": file.filename,
         "file_path": str(file_path),
+        "file_size_bytes": file_size_bytes,
     }
 
 
@@ -681,9 +726,16 @@ async def start_translation(
         raise HTTPException(status_code=404, detail="File not found")
 
     file_path = matching_files[0]
+    original_filename = normalize_original_filename(file_path.name)
+    file_size_bytes = file_path.stat().st_size
+    page_count = get_pdf_page_count(file_path)
+    requested_pages = translation_settings.get("pages") if translation_settings else None
+    global_settings = load_global_settings()
+    service = global_settings.get("service", "SiliconFlowFree")
 
     # Generate task ID
     task_id = str(uuid.uuid4())
+    created_at = datetime.utcnow().isoformat()
 
     # Create output directory
     output_dir = user_dir / "outputs" / task_id
@@ -696,8 +748,26 @@ async def start_translation(
         "message": "Translation queued",
         "username": current_user["username"],
         "file_id": file_id,
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": created_at,
+        "service": service,
+        "original_filename": original_filename,
+        "file_size_bytes": file_size_bytes,
+        "page_count": page_count,
+        "requested_pages": requested_pages,
     }
+
+    user_manager.create_translation_event(
+        task_id=task_id,
+        username=current_user["username"],
+        status="queued",
+        started_at=created_at,
+        service=service,
+        filename=file_path.name,
+        original_filename=original_filename,
+        file_size_bytes=file_size_bytes,
+        page_count=page_count,
+        requested_pages=requested_pages,
+    )
 
     # Start translation in background
     asyncio.create_task(
@@ -723,6 +793,7 @@ async def run_translation(
     """Run translation task in background using real translation engine"""
     mono_path = None
     dual_path = None
+    token_usage = {}
     original_filename = normalize_original_filename(file_path.name)
     user_dir = user_manager.get_user_dir(username)
 
@@ -730,14 +801,10 @@ async def run_translation(
         active_tasks[task_id]["status"] = "processing"
         active_tasks[task_id]["message"] = "Loading user settings..."
         active_tasks[task_id]["original_filename"] = original_filename
+        user_manager.update_translation_event(task_id, status="processing")
 
         # 统一读取全局设置
-        global_settings_file = Path("data/global_settings.json")
-        user_settings = (
-            json.loads(global_settings_file.read_text())
-            if global_settings_file.exists()
-            else {}
-        )
+        user_settings = load_global_settings()
 
         # Get pages from translation_settings if provided
         pages = translation_settings.get("pages") if translation_settings else None
@@ -815,6 +882,21 @@ async def run_translation(
             "dual": str(dual_path) if dual_path else None,
         }
         active_tasks[task_id]["original_filename"] = original_filename
+        token_summary = flatten_token_usage(token_usage)
+
+        started_at = datetime.fromisoformat(active_tasks[task_id]["created_at"])
+        completed_at = datetime.utcnow()
+        user_manager.update_translation_event(
+            task_id,
+            status="completed",
+            completed_at=completed_at.isoformat(),
+            duration_seconds=(completed_at - started_at).total_seconds(),
+            prompt_tokens=token_summary["prompt_tokens"],
+            completion_tokens=token_summary["completion_tokens"],
+            total_tokens=token_summary["total_tokens"],
+            cache_hit_prompt_tokens=token_summary["cache_hit_prompt_tokens"],
+            error_message=None,
+        )
 
         # Update user history
         history_file = user_dir / "history.json"
@@ -830,6 +912,10 @@ async def run_translation(
                 "status": "completed",
                 "mono_path": str(mono_path) if mono_path else None,
                 "dual_path": str(dual_path) if dual_path else None,
+                "service": active_tasks[task_id].get("service"),
+                "file_size_bytes": active_tasks[task_id].get("file_size_bytes"),
+                "page_count": active_tasks[task_id].get("page_count"),
+                "token_usage": token_usage,
             }
         )
         history_file.write_text(json.dumps(history, indent=2))
@@ -840,6 +926,15 @@ async def run_translation(
         logger.error(f"Translation task {task_id} failed: {e}", exc_info=True)
         active_tasks[task_id]["status"] = "failed"
         active_tasks[task_id]["message"] = f"Translation failed: {str(e)}"
+        started_at = datetime.fromisoformat(active_tasks[task_id]["created_at"])
+        completed_at = datetime.utcnow()
+        user_manager.update_translation_event(
+            task_id,
+            status="failed",
+            completed_at=completed_at.isoformat(),
+            duration_seconds=(completed_at - started_at).total_seconds(),
+            error_message=str(e),
+        )
 
         # Update history with failed status
         try:
@@ -857,6 +952,9 @@ async def run_translation(
                     "completed_at": datetime.utcnow().isoformat(),
                     "status": "failed",
                     "error": str(e),
+                    "service": active_tasks[task_id].get("service"),
+                    "file_size_bytes": active_tasks[task_id].get("file_size_bytes"),
+                    "page_count": active_tasks[task_id].get("page_count"),
                 }
             )
             history_file.write_text(json.dumps(history, indent=2))
