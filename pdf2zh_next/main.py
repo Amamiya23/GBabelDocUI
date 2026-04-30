@@ -16,7 +16,7 @@ import babeldoc.assets.assets
 from pdf2zh_next.config import ConfigManager
 from pdf2zh_next.high_level import do_translate_file_async
 
-__version__ = "2.7.1"
+__version__ = "2.8.2"
 
 logger = logging.getLogger(__name__)
 
@@ -90,21 +90,22 @@ async def main() -> int:
 
     if settings.basic.gui:
         # Check if user wants the new web UI
-        if os.environ.get('PDF2ZH_WEB_UI') == '1' or '--web-ui' in sys.argv:
+        if os.environ.get("PDF2ZH_WEB_UI") == "1" or "--web-ui" in sys.argv:
             logger.info("Starting new Web UI with authentication...")
             from pdf2zh_next.web_api import app
-            
+
             port = settings.gui_settings.server_port
             logger.info(f"Web UI will be available at http://localhost:{port}")
             logger.info("Use the original Gradio UI by removing --web-ui flag")
-            
+
             # Use async-compatible uvicorn server
             import uvicorn
+
             config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
             server = uvicorn.Server(config)
             await server.serve()
             return 0
-        
+
         # Original Gradio UI
         from pdf2zh_next.gui import setup_gui
 

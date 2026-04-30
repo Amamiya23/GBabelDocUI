@@ -2,6 +2,8 @@ from pdf2zh_next.config import AnythingLLMSettings
 from pdf2zh_next.config import AzureOpenAISettings
 from pdf2zh_next.config import AzureSettings
 from pdf2zh_next.config import BingSettings
+from pdf2zh_next.config import ClaudeCodeSettings
+from pdf2zh_next.config import CLISettings
 from pdf2zh_next.config import DeepLSettings
 from pdf2zh_next.config import DeepSeekSettings
 from pdf2zh_next.config import DifySettings
@@ -30,7 +32,7 @@ from pdf2zh_next.high_level import do_translate_file_async
 
 # from pdf2zh_next.high_level import translate, translate_stream
 
-__version__ = "2.7.1"
+__version__ = "2.8.2"
 __author__ = "Byaidu, awwaawwa"
 __license__ = "AGPL-3.0"
 __maintainer__ = "awwaawwa"
@@ -58,6 +60,7 @@ __all__ = [
     "GrokSettings",
     "GroqSettings",
     "QwenMtSettings",
+    "CLISettings",
     "PDFSettings",
     "TranslationSettings",
     "WatermarkOutputMode",
